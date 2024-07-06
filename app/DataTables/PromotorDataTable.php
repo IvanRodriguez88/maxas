@@ -1,0 +1,162 @@
+<?php
+
+namespace App\DataTables;
+
+use App\Models\Promotor;
+use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Yajra\DataTables\EloquentDataTable;
+use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Yajra\DataTables\Html\Button;
+use Yajra\DataTables\Html\Column;
+use Yajra\DataTables\Html\Editor\Editor;
+use Yajra\DataTables\Html\Editor\Fields;
+use Yajra\DataTables\Services\DataTable;
+
+class PromotorDataTable extends DataTable
+{
+    /**
+     * Build DataTable class.
+     *
+     * @param QueryBuilder $query Results from query() method.
+     * @return \Yajra\DataTables\EloquentDataTable
+     */
+    public function dataTable(QueryBuilder $query): EloquentDataTable
+    {
+        $datatable = (new EloquentDataTable($query))
+        ->setRowId('id')
+        ->editColumn('created_at', function($row) {
+            return date("d/m/Y H:i", strtotime($row->created_at));
+        })
+        ->editColumn('updated_at', function($row) {
+            return date("d/m/Y H:i", strtotime($row->updated_at));
+        })
+        ->editColumn('is_active', function($row) {
+            if (!$row->is_active) {
+                return '<span class="badge badge-danger mb-2 me-4">No</span>';
+            }
+            return '<span class="badge badge-success mb-2 me-4">Sí</span>';
+        });
+
+        $datatable->addColumn('action', function($row){
+            return $this->getActions($row);
+        })->rawColumns(["action", "is_active"]);
+
+        return $datatable;
+    }
+
+    /**
+     * Get query source of dataTable.
+     *
+     * @param \App\Models\Promotor $model
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function query(Promotor $model): QueryBuilder
+    {
+        return $model->select(
+			'promotors.*',
+		)
+		->newQuery();
+    }
+
+    public function getActions($row){
+        $result = null;
+        if (auth()->user()->hasPermissions("promotors.show")) {
+            $result .= '
+                <a title="Clientes" href='.route("promotors.show", $row->id).' class="btn btn-outline-dark btn-icon ps-2 px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </a>
+            ';
+        if (auth()->user()->hasPermissions("promotors.edit")) {
+            $result .= '
+                <a title="Editar" href='.route("promotors.edit", $row->id).' class="btn btn-outline-secondary btn-icon ps-2 px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                </a>
+            ';
+        }
+        if (auth()->user()->hasPermissions("promotors.destroy")) {
+            $result .= '
+                <a onclick="deleteRow('.$row->id.')" title="Eliminar" class="btn btn-outline-danger btn-icon ps-2 px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>        </a>
+                </a>
+            ';
+        }
+        }
+
+        return $result;
+	}
+
+    /**
+     * Optional method if you want to use html builder.
+     *
+     * @return \Yajra\DataTables\Html\Builder
+     */
+    public function html(): HtmlBuilder
+    {
+        return $this->builder()
+                    ->parameters([
+                        'paging' => true,
+                        'searching' => true,
+                        'info' => true,
+                        'responsive' => true,
+                        "scrollX"=> true,
+                    ])
+                    ->setTableId('promotors-table')
+                    ->columns($this->getColumns())
+                    ->minifiedAjax()
+                    ->orderBy(0, "asc")
+                    ->selectStyleSingle()
+                    ->buttons([
+                        Button::make('excel'),
+                        Button::make('csv'),
+                        Button::make('pdf'),
+                        Button::make('print'),
+        ]);
+    }
+
+    /**
+     * Get the dataTable columns definition.
+     *
+     * @return array
+     */
+    public function getColumns(): array
+    {
+        $columns = [
+            Column::make('id')
+            ->title('Id')
+            ->searchable(false)
+            ->visible(false),
+            Column::make('name')->title("Nombre"),
+            Column::make('account_number')->title("Cuenta o clabe"),
+            Column::make('comission')->title("Comisión"),
+            Column::make('balance')->title("Saldo"),
+            Column::make('created_at')->searchable(false)->title("Fecha creado"),
+            Column::make('updated_at')->searchable(false)->title("Fecha editado"),
+            Column::make('is_active')->title("Activo"),
+        ];
+
+        if (auth()->user()->hasPermissions("promotors.edit") ||
+            auth()->user()->hasPermissions("promotors.create") ||
+            auth()->user()->hasPermissions("promotors.destroy")) {
+            $columns = array_merge($columns, [
+                Column::computed('action')
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center')
+                ->title('Acciones')
+            ]);
+        }
+
+        return $columns;
+    }
+
+    /**
+     * Get filename for export.
+     *
+     * @return string
+     */
+    protected function filename(): string
+    {
+        return 'Promotors' . date('YmdHis');
+    }
+}
