@@ -19,7 +19,6 @@ use App\Http\Controllers\ReturnTypeController;
 use App\Http\Controllers\ReturnRequestController;
 use App\Http\Controllers\ReturnBaseController;
 use App\Http\Controllers\PromotorController;
-use App\Http\Controllers\PromotorClientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,9 +52,6 @@ Route::middleware("auth")->group(function () {
     
     Route::get('return_requests/getReturnRequestReturnTypeDataTable/{return_request}',  [ReturnRequestController::class, 'getReturnRequestReturnTypeDataTable'])->name('return_requests.getReturnRequestReturnTypeDataTable');
     // Route::get('return_requests/sendCabMail/{return_request}', [ReturnRequestController::class, 'sendCabMail'])->name("return_requests.sendCabMail");
-
-
-    Route::get('promotors/getAddPromotorClientModal', [PromotorController::class, 'getAddPromotorClientModal'])->name("promotors.getAddPromotorClientModal");
 
 
     //Esto va con permisos
@@ -95,10 +91,6 @@ Route::middleware("auth")->group(function () {
         //Solicitudes de retorno
         Route::resource('return_types', ReturnTypeController::class);
         Route::resource('return_bases', ReturnBaseController::class);
-
-        
-        Route::post('promotor_clients', [PromotorClientController::class, 'store'])->name("promotor_clients.store");
-        Route::delete('promotor_clients/{promotor_client}', [PromotorClientController::class, 'destroy'])->name("promotor_clients.destroy");
 
         Route::resource('promotors', PromotorController::class);
         Route::resource('return_requests', ReturnRequestController::class);

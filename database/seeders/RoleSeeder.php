@@ -24,6 +24,10 @@ class RoleSeeder extends Seeder
             "name" => "Cliente",
             "description" => "Cliente para hacer pre solicitudes"
         ]);
+
+        Role::create([
+            "name" => "Promotor",
+        ]);
        
     }
 }

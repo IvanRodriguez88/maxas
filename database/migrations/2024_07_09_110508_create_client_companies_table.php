@@ -13,16 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('promotors', function (Blueprint $table) {
+        Schema::create('client_companies', function (Blueprint $table) {
             $table->id();
-            
-            $table->string('name');
-            $table->string('account_number')->comment("Cuenta bancaria o clabe interbancaria");
-            $table->float('comission')->comment("Comisión del promotor en %");
-            $table->float('balance')->comment("Saldo que tiene el promotor");
-            
-            $table->timestamps();
 
+            $table->unsignedBigInteger('client_id')->nullable();
+            $table->foreign('client_id')->references('id')->on('clients');
+
+            $table->unsignedBigInteger('company_id')->nullable();
+            $table->foreign('company_id')->references('id')->on('companies');
+
+            $table->timestamps();
             $table->string('notes', 1024)->nullable()->comment('Notas');    
             $table->boolean('is_active')->default(1)->comment('Muestra si la fila está activa');
             $table->smallInteger('created_by')->unsigned()->nullable()->comment('Usuario que creó');
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('promotors');
+        Schema::dropIfExists('client_companies');
     }
 };

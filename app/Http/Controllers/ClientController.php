@@ -7,6 +7,9 @@ use App\DataTables\ClientDataTable;
 use App\Http\Requests\ClientRequest;
 use App\Models\Client;
 use App\Models\User;
+use App\Models\Company;
+use App\Models\Promotor;
+
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\ClientType;
@@ -23,7 +26,9 @@ class ClientController extends Controller
     private function getCommonModels()
     {
         $clientTypes = ClientType::where("is_active", 1)->pluck("name", "id");
-        return compact("clientTypes");
+        $companies = Company::where("is_active", 1)->get();
+        $promotors = Promotor::where("is_active", 1)->pluck("name", "id");
+        return compact("clientTypes", "companies", "promotors");
     }
 
     public function create()
@@ -35,6 +40,7 @@ class ClientController extends Controller
     {
         $status = true;
 		$client = null;
+
         //Crear usuario
         $user = User::create([
             "name" => $request->name,
@@ -45,16 +51,21 @@ class ClientController extends Controller
 
 
         $params = array_merge($request->all(), [
-            "name" => $request->name,
             "user_id" => $user->id,
-            "description" => $request->description,
             'is_active' => !is_null($request->is_active),
             'created_by' => auth()->user()->id,
             'updated_by' => auth()->user()->id,
 		]);
-        
+
+        if ($params["promotor_id"] == null) {
+            $params["comission_ban_promotor"] = null;
+            $params["comission_flu_promotor"] = null;
+            $params["comission_nom_promotor"] = null;
+        }
+
 		try {
             $client = Client::create($params);
+            $client->companies()->attach($params["companies"] ?? []);
             $message = "Cliente creado correctamente";
 		} catch (\Illuminate\Database\QueryException $e) {
             $status = false;
@@ -74,14 +85,25 @@ class ClientController extends Controller
     {
         $status = true;
         $params = array_merge($request->all(), [
-            "name" => $request->name,
-            "description" => $request->description,
             "updated_by" => auth()->user()->id,
             'is_active' => !is_null($request->is_active),
 		]);
 
+        unset($params["password"]);
+
+        if ($params["promotor_id"] == null) {
+            $params["comission_ban_promotor"] = null;
+            $params["comission_flu_promotor"] = null;
+            $params["comission_nom_promotor"] = null;
+        }
+
         try {
             $client->update($params);
+            $client->companies()->sync($params["companies"] ?? []);
+            $client->user->update(["email" => $params["email"]]);
+            if ($request->password) {
+                $client->user->update(["password" => Hash::make($request->password)]);
+            }
             $message = "Cliente modificado correctamente";
         } catch (\Illuminate\Database\QueryException $e) {
             $status = false;

@@ -9,10 +9,20 @@ class Promotor extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['name', 'description', 'is_active', 'created_by', 'updated_by'];
+    protected $fillable = [
+        'name', 'account_number',
+        'comission_ban', 'comission_flu', 'comission_nom',
+        'user_id', 'balance',
+        'is_active', 'created_by', 'updated_by'];
 
-    public function clients(){
-        return $this->belongsToMany('App\Models\Client', 'promotor_clients', 'promotor_id', 'client_id');
+    public function clients()
+    {
+        return $this->hasMany('App\Models\Client');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo("App\Models\User", "user_id");
     }
 
 }

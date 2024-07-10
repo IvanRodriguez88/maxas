@@ -60,12 +60,6 @@ class PromotorDataTable extends DataTable
 
     public function getActions($row){
         $result = null;
-        if (auth()->user()->hasPermissions("promotors.show")) {
-            $result .= '
-                <a title="Clientes" href='.route("promotors.show", $row->id).' class="btn btn-outline-dark btn-icon ps-2 px-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                </a>
-            ';
         if (auth()->user()->hasPermissions("promotors.edit")) {
             $result .= '
                 <a title="Editar" href='.route("promotors.edit", $row->id).' class="btn btn-outline-secondary btn-icon ps-2 px-1">
@@ -79,7 +73,6 @@ class PromotorDataTable extends DataTable
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>        </a>
                 </a>
             ';
-        }
         }
 
         return $result;
@@ -127,7 +120,6 @@ class PromotorDataTable extends DataTable
             ->visible(false),
             Column::make('name')->title("Nombre"),
             Column::make('account_number')->title("Cuenta o clabe"),
-            Column::make('comission')->title("Comisión"),
             Column::make('balance')->title("Saldo"),
             Column::make('created_at')->searchable(false)->title("Fecha creado"),
             Column::make('updated_at')->searchable(false)->title("Fecha editado"),

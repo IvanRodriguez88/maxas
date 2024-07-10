@@ -24,7 +24,7 @@
                     @csrf
                     @method("PUT")
                     <div class="d-flex justify-content-center">
-                        <div class="w-50">
+                        <div class="w-100">
                             @include("clients.fields")
                             <div class="d-flex justify-content-end gap-2">
                                 <a href="{{route('clients.index')}}" class="btn btn-dark">Cancelar</a>
@@ -39,7 +39,7 @@
     
     <!--  BEGIN CUSTOM SCRIPTS FILE  -->
     <x-slot:footerFiles>
-        
+        @vite(['resources/js/clients/clients.js'])
     </x-slot>
     <!--  END CUSTOM SCRIPTS FILE  -->
 </x-base-layout>

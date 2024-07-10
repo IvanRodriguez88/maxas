@@ -13,16 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('promotor_clients', function (Blueprint $table) {
-            $table->id();
-            
-            $table->unsignedBigInteger('promotor_id')->nullable();
-            $table->foreign('promotor_id')->references('id')->on('promotors');
+        Schema::create('request_types', function (Blueprint $table) {
+            $table->tinyIncrements('id');
 
-            $table->unsignedBigInteger('client_id')->nullable();
-            $table->foreign('client_id')->references('id')->on('clients');
-
-            $table->float("commission")->mullable()->comment("Comisión que el promotor le cobra al cliente");
+            $table->string('name');
+            $table->string('description')->nullable();
 
             $table->timestamps();
 
@@ -42,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('promotor_clients');
+        Schema::dropIfExists('request_types');
     }
 };

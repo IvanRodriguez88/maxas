@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PromotorClientRequest extends FormRequest
+class RequestTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class PromotorClientRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -24,17 +24,7 @@ class PromotorClientRequest extends FormRequest
     public function rules()
     {
         return [
-            'client_id' => 'required|unique',
-            'commission' => 'required|numeric|min:0|max:100',
+            //
         ];
     }
-
-    
-	public function attributes()
-	{
-		return [
-			'client_id' => 'Cliente',
-            'commission' => 'Comisión',
-		];
-	}
 }

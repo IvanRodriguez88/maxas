@@ -26,6 +26,7 @@ use Database\Seeders\ReturnTypeSeeder;
 use Database\Seeders\ReturnBaseSeeder;
 use Database\Seeders\PromotorSeeder;
 use Database\Seeders\ReturnRequestStatusSeeder;
+use Database\Seeders\RequestTypeSeeder;
 
 
 class DatabaseSeeder extends Seeder
@@ -62,6 +63,7 @@ class DatabaseSeeder extends Seeder
             ReturnBaseSeeder::class,
             PromotorSeeder::class,
             ReturnRequestStatusSeeder::class,
+            RequestTypeSeeder::class,
         ]);
     }
 }

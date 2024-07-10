@@ -15,17 +15,17 @@ class PromotorSeeder extends Seeder
      */
     public function run()
     {
-        Promotor::create([
-            "name" => "Sergio",
-            "account_number" => "415218906721",
-            "comission" => 4,
-            "balance" => 1000
-        ]);
-        Promotor::create([
-            "name" => "David",
-            "account_number" => "185199229022451841",
-            "comission" => 4,
-            "balance" => 1000
-        ]);
+        // Promotor::create([
+        //     "name" => "Sergio",
+        //     "account_number" => "415218906721",
+        //     "comission" => 4,
+        //     "balance" => 1000
+        // ]);
+        // Promotor::create([
+        //     "name" => "David",
+        //     "account_number" => "185199229022451841",
+        //     "comission" => 4,
+        //     "balance" => 1000
+        // ]);
     }
 }
