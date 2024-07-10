@@ -33,6 +33,7 @@ class ClientRequest extends FormRequest
         return [
             'name' => 'required|max:255',
             'client_type_id' => 'required',
+            'return_base_id' => 'required',
             'email' => [
                 'required',
                 'string',

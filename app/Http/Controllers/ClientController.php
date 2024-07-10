@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\User;
 use App\Models\Company;
 use App\Models\Promotor;
+use App\Models\ReturnBase;
 
 use Illuminate\Support\Facades\Hash;
 
@@ -28,7 +29,8 @@ class ClientController extends Controller
         $clientTypes = ClientType::where("is_active", 1)->pluck("name", "id");
         $companies = Company::where("is_active", 1)->get();
         $promotors = Promotor::where("is_active", 1)->pluck("name", "id");
-        return compact("clientTypes", "companies", "promotors");
+        $returnBases = ReturnBase::where("is_active", 1)->pluck("name", "id");
+        return compact("clientTypes", "companies", "promotors", "returnBases");
     }
 
     public function create()

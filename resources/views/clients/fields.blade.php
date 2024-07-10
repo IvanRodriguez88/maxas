@@ -23,7 +23,7 @@
 </div>
 
 <div class="row mb-2">
-    <div class="col-8">
+    <div class="col-6">
         @include("components.custom.forms.input", [
             "id" => "name",
             "name" => "name",
@@ -35,7 +35,7 @@
             "invalid_feedback" => "El campo es requerido"
         ])
     </div>
-    <div class="col-4">
+    <div class="col-3">
         @include("components.custom.forms.input-select", [
             "id" => "client_type_id",
             "name" => "client_type_id",
@@ -46,7 +46,17 @@
             "invalid_feedback" => "El campo es requerido"
         ])
     </div>
-
+    <div class="col-3">
+        @include("components.custom.forms.input-select", [
+            "id" => "return_base_id",
+            "name" => "return_base_id",
+            "elements" => $returnBases,
+            "value" => isset($client) ? $client->return_base_id :  old("return_base_id"),
+            "label" => "Base de retorno",
+            "required" => true,
+            "invalid_feedback" => "El campo es requerido"
+        ])
+    </div>
 </div>
 
 <div class="row mb-2">

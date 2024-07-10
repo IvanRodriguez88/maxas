@@ -34,6 +34,9 @@ return new class extends Migration
             $table->unsignedBigInteger('promotor_id')->nullable();
             $table->foreign('promotor_id')->references('id')->on('promotors');
 
+            $table->unsignedTinyInteger('return_base_id')->nullable();
+            $table->foreign('return_base_id')->references('id')->on('return_bases');
+
             //Comisiones que el promotor cobra al cliente
             $table->float('comission_ban_promotor')->nullable()->comment("Comisión de bancarizacion que el promotor cobra al cliente en %");
             $table->float('comission_flu_promotor')->nullable()->comment("Comisión de flujo que el promotor cobra al cliente en %");

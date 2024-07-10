@@ -13,11 +13,17 @@ class Client extends Model
     'rfc', 'street_and_number', 'cologne', 'state', 'city', 'postal_code',
     'comission_ban', 'comission_flu', 'comission_nom', 'promotor_id',
     'comission_ban_promotor', 'comission_flu_promotor', 'comission_nom_promotor',
+    'return_base_id',
     'is_active', 'created_by', 'updated_by'];
 
     public function promotor()
     {
         return $this->belongsTo('App\Models\Promotor', 'promotor_id');
+    }
+
+    public function returnBase()
+    {
+        return $this->belongsTo('App\Models\ReturnBase', 'return_base_id');
     }
 
     public function companies()
