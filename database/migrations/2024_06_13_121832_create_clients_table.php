@@ -17,12 +17,6 @@ return new class extends Migration
             $table->id();
 
             $table->string('name');
-            $table->string('rfc');
-            $table->string('street_and_number');
-            $table->string('cologne');
-            $table->string('state');
-            $table->string('city');
-            $table->string('postal_code');
 
             $table->float('comission_ban')->comment("Comisión de bancarizacion del promotor en %");
             $table->float('comission_flu')->comment("Comisión de flujo del promotor en %");

@@ -66,8 +66,8 @@ class ReturnRequestDataTable extends DataTable
         ->editColumn('play_return', function($row) {
             return "$ ".number_format($row->play_return, 2, '.', ',');
         })
-        ->editColumn('cab5T', function($row) {
-            return "$ ".number_format($row->cab5T, 2, '.', ',');
+        ->editColumn('subtotal', function($row) {
+            return "$ ".number_format($row->subtotal, 2, '.', ',');
         })
         ->editColumn('total_invoice', function($row) {
             return "$ ".number_format($row->total_invoice, 2, '.', ',');
@@ -75,8 +75,14 @@ class ReturnRequestDataTable extends DataTable
         ->editColumn('return_percentage', function($row) {
             return $row->return_percentage." %";
         })
+        ->editColumn('requires_invoice', function($row) {
+            return $row->requires_invoice == 1 ? "Sí" : "No";
+        })
         ->editColumn('return_request_status_id', function($row) {
             switch ($row->return_request_status_id) {
+                case 'Incompleta':
+                    $color = "danger";
+                    break;
                 case 'Ingresos':
                     $color = "primary";
                     break;
@@ -138,18 +144,20 @@ class ReturnRequestDataTable extends DataTable
         return $model->select(
 			'return_requests.*',
             'companies.name as company_id',
-            'clients.name as client_id',
+            'client_businesses.business_name as client_business_id',
             'promotors.name as promotor_id',
             'banks.name as account_id',
             'return_bases.name as return_base_id',
-            'return_request_statuses.name as return_request_status_id'
+            'return_request_statuses.name as return_request_status_id',
+            'request_types.name as request_type_id'
 		)
-        ->leftjoin('clients', 'return_requests.client_id', '=', 'clients.id')
+        ->leftjoin('client_businesses', 'return_requests.client_business_id', '=', 'client_businesses.id')
         ->leftjoin('promotors', 'return_requests.promotor_id', '=', 'promotors.id')
         ->leftjoin('companies', 'return_requests.company_id', '=', 'companies.id')
         ->leftjoin('accounts', 'return_requests.account_id', '=', 'accounts.id')
         ->leftjoin('banks', 'accounts.bank_id', '=', 'banks.id')
         ->leftjoin('return_bases', 'return_requests.return_base_id', '=', 'return_bases.id')
+        ->leftjoin('request_types', 'return_requests.request_type_id', '=', 'request_types.id')
         ->leftjoin('return_request_statuses', 'return_requests.return_request_status_id', '=', 'return_request_statuses.id')
 		->newQuery();
     }
@@ -217,26 +225,27 @@ class ReturnRequestDataTable extends DataTable
             ->visible(false),
 
             Column::make('return_request_status_id')->title("Estado")->name("return_request_statuses.name"),
-            Column::make('client_id')->title("Cliente")->name("clients.name"),
+            Column::make('client_business_id')->title("Cliente")->name("client_businesses.business_name"),
+            Column::make('request_type_id')->title("T. de Solicitud")->name("request_types.name"),
             Column::make('company_id')->title("Empresa")->name("companies.name"),
             Column::make('account_id')->title("Cuenta")->name("banks.name"),
             Column::make('promotor_id')->title("Promotor")->name("promotors.name"),
             Column::make('date')->title("Fecha")->name("return_requests.date"),
             Column::make('total_invoice')->title("Total de factura")->className("text-end"),
             Column::make('client_payment_proof')->title("Cpbnte. de pago")->className("text-center"),
+            Column::make('requires_invoice')->title("Req. Fac.")->className("text-center"),
             Column::make('invoice')->title("Factura")->className("text-end"),
             Column::make('total_return')->title("Total a retornar")->className("text-end"),
             Column::make('comission_charged')->title("Comisión cobrada")->className("text-end"),
+            Column::make('subtotal')->title("Subtotal")->className("text-end"),
             Column::make('iva')->title("IVA")->className("text-end"),
             Column::make('social_cost')->title("Costo social")->className("text-end"),
             Column::make('comission_promotor')->title("Comisión de promotor")->className("text-end"),
             Column::make('comission_cab')->title("Comisión CAB")->className("text-end"),
             Column::make('comission_play')->title("Comisión Play")->className("text-end"),
             Column::make('play_return')->title("Retorno play")->className("text-end"),
-            Column::make('cab5T')->title("CAB .5% sobre T")->className("text-end"),
             Column::make('return_percentage')->title("% de retorno")->className("text-center"),
             Column::make('return_base_id')->title("Base de retorno")->name("return_bases.name"),
-
 
             Column::make('created_at')->title("Fecha creado"),
             Column::make('updated_at')->title("Fecha editado"),

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             
             $table->string('name');
-            $table->string('account_number')->comment("Cuenta bancaria o clabe interbancaria");
             $table->float('comission_ban')->comment("Comisión de bancarizacion del promotor en %");
             $table->float('comission_flu')->comment("Comisión de flujo del promotor en %");
             $table->float('comission_nom')->comment("Comisión de nominas del promotor en %");

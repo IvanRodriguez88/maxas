@@ -58,17 +58,12 @@ class CompanyDataTable extends DataTable
         return $model->select(
 			'companies.id',
             'companies.name',
-            'companies.comission',
             'groups.name as group_id',
-			'bank_separations.name as bank_separation_id',
-            'account_statuses.name as account_status_id',
 			'intermediaries.name as intermediary_id',
 			'company_levels.name as company_level_id',
 			'companies.is_active',
 		)
 		->leftjoin('groups', 'companies.group_id', '=', 'groups.id')
-        ->leftjoin('bank_separations', 'companies.bank_separation_id', '=', 'bank_separations.id')
-		->leftjoin('account_statuses', 'companies.account_status_id', '=', 'account_statuses.id')
 		->leftjoin('intermediaries', 'companies.intermediary_id', '=', 'intermediaries.id')
 		->leftjoin('company_levels', 'companies.company_level_id', '=', 'company_levels.id')
 		->newQuery();
@@ -136,10 +131,7 @@ class CompanyDataTable extends DataTable
             ->searchable(false)
             ->visible(false),
             Column::make('name')->title("Nombre"),
-            Column::make('comission')->title("Comisión")->addClass("text-center"),
             Column::make('group_id')->title("Grupo"),
-            Column::make('bank_separation_id')->title("Sep. Banco"),
-            Column::make('account_status_id')->title("Estatus"),
             Column::make('intermediary_id')->title("Intermediario"),
             Column::make('company_level_id')->title("Nivel"),
             Column::make('is_active')->title("Activo"),

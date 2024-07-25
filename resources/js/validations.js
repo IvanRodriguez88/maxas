@@ -12,3 +12,7 @@ window.addEventListener('load', function() {
     }, false);
   });
 }, false);
+
+window.formatNumber = (value) => {
+  return parseFloat(value).toFixed(2);
+}

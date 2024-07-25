@@ -75,6 +75,13 @@ class MenuSeeder extends Seeder
             "permission_id" => $this->getPermissionId("currency_types")
         ]);
 
+        Menu::create([
+            "name" => "Tipos de bancos",
+            "parent_id" => $accounts->id,
+            "position" => 7.1,
+            "permission_id" => $this->getPermissionId("bank_separations")
+        ]);
+
         $companies = Menu::create([
             "name" => "Empresas",
             "parent_id" => null,
@@ -93,12 +100,6 @@ class MenuSeeder extends Seeder
             "permission_id" => $this->getPermissionId("groups")
         ]);
         Menu::create([
-            "name" => "Tipos de estados",
-            "parent_id" => $companies->id,
-            "position" => 10,
-            "permission_id" => $this->getPermissionId("account_statuses")
-        ]);
-        Menu::create([
             "name" => "Intermediarios",
             "parent_id" => $companies->id,
             "position" => 11,
@@ -110,12 +111,7 @@ class MenuSeeder extends Seeder
             "position" => 12,
             "permission_id" => $this->getPermissionId("company_levels")
         ]);
-        Menu::create([
-            "name" => "Separación de bancos",
-            "parent_id" => $companies->id,
-            "position" => 13,
-            "permission_id" => $this->getPermissionId("bank_separations")
-        ]);
+       
 
         
         $clients = Menu::create([

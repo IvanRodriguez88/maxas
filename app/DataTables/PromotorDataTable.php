@@ -119,7 +119,6 @@ class PromotorDataTable extends DataTable
             ->searchable(false)
             ->visible(false),
             Column::make('name')->title("Nombre"),
-            Column::make('account_number')->title("Cuenta o clabe"),
             Column::make('balance')->title("Saldo"),
             Column::make('created_at')->searchable(false)->title("Fecha creado"),
             Column::make('updated_at')->searchable(false)->title("Fecha editado"),

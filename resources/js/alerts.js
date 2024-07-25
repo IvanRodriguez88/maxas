@@ -80,7 +80,7 @@ window.snackBar = (text, type, color) => {
         text: text,
         actionTextColor: '#fff',
         backgroundColor: color ?? (tpyes[type] ?? "#4361ee"),
-        duration: 1500
+        duration: 2500
     });
 }
 

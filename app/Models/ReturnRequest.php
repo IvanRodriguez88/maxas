@@ -10,16 +10,17 @@ class ReturnRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'client_id', 'company_id', 'account_id', 'promotor_id', 'return_base_id', 'date',
-        'invoice', 'total_return', 'comission_charged', 'iva', 'social_cost', 'account_destiny_id',
-        'comission_promotor', 'comission_cab', 'comission_play', 'play_return',
-        'cab5T', 'return_percentage', 'return_base_id', 'total_invoice', 'client_payment_proof',
+        'client_business_id', 'company_id', 'account_id', 'promotor_id', 'return_base_id', 'request_type_id', 'date', 'requires_invoice',
+        'invoice', 'total_return', 'comission_charged', 'subtotal', 'iva', 'social_cost', 'account_destiny_id',
+        'return_percentage_play', 'return_percentage_promotor', 'return_percentage_caballero', 'comission_promotor', 'comission_cab', 'comission_play', 'play_return',
+        'return_percentage', 'return_base_id', 'total_invoice', 'client_payment_proof',
+        'payment_method_id', 'payment_way_id', 'cfdi_use_id', 'origin_account',
         'is_active', 'created_by', 'updated_by'
     ];
 
-    public function client()
+    public function clientBusiness()
     {
-        return $this->belongsTo("App\Models\Client", "client_id", "id");
+        return $this->belongsTo("App\Models\clientBusiness", "client_business_id", "id");
     }
 
     public function company()
@@ -47,6 +48,11 @@ class ReturnRequest extends Model
         return $this->belongsTo("App\Models\ReturnBase", "return_base_id", "id");
     }
 
+    public function requestType()
+    {
+        return $this->belongsTo("App\Models\RequestType", "request_type_id", "id");
+    }
+
     public function status()
     {
         return $this->belongsTo("App\Models\ReturnRequestStatus", "return_request_status_id", "id");
@@ -56,5 +62,17 @@ class ReturnRequest extends Model
     {
         return $this->hasMany('App\Models\ReturnRequestReturnType', 'return_request_id', 'id');
     }
+
+    public function returnConcepts()
+    {
+        return $this->hasMany('App\Models\ReturnRequestConcept', 'return_request_id', 'id');
+    }
+
+    public function getTotalSumReturnTypeAttribute()
+    {
+        return $this->returnTypes()->sum('amount');
+    }
+
+    protected $appends = ['total_sum_return_type'];
 
 }

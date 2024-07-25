@@ -16,7 +16,7 @@ class BankSeparationSeeder extends Seeder
     public function run()
     {
         BankSeparation::create([
-            "name" => "Vault"
+            "name" => "Fintec"
         ]);
         BankSeparation::create([
             "name" => "Comercial"

@@ -19,6 +19,7 @@ use App\Http\Controllers\ReturnTypeController;
 use App\Http\Controllers\ReturnRequestController;
 use App\Http\Controllers\ReturnBaseController;
 use App\Http\Controllers\PromotorController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,9 +38,7 @@ Route::get('return_requests/new', [ReturnRequestController::class, "new"])->name
 
 
 Route::middleware("auth")->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard', ['title' => 'Inicio']);
-    })->name("dashboard.index");
+    Route::get('/dashboard', [DashboardController::class, "index"])->name("dashboard.index");
 
     Route::get('companies/addAccount/{account}', [CompanyController::class, "addAccount"])->name("companies.addAccount");
     Route::get('companies/getDataAutocomplete', [CompanyController::class, "getDataAutocomplete"])->name("companies.getDataAutocomplete");
@@ -47,10 +46,22 @@ Route::middleware("auth")->group(function () {
     Route::get('companies/getById/{company}', [CompanyController::class, "getById"])->name("accounts.getById");
     
     Route::get('accounts/getDataAutocomplete', [AccountController::class, "getDataAutocomplete"])->name("accounts.getDataAutocomplete");
-
     Route::get('clients/getDataAutocomplete', [ClientController::class, "getDataAutocomplete"])->name("clients.getDataAutocomplete");
     
+    //Rutas para agregar razones sociales (constancias de situacion fiscal) a un cliente
+    Route::get('clients/getAddClientBusinessModal', [ClientController::class, "getAddClientBusinessModal"])->name("clients.getAddClientBusinessModal");
+    Route::get('clients/getEditClientBusinessModal/{client_business}', [ClientController::class, 'getEditClientBusinessModal'])->name("clients.getEditClientBusinessModal");
+    Route::post('clients/addClientBusiness/{client}', [ClientController::class, 'addClientBusiness'])->name("clients.addClientBusiness");
+    Route::put('clients/editClientBusiness/{client_business}', [ClientController::class, 'editClientBusiness'])->name("clients.editClientBusiness");
+    Route::delete('clients/deleteClientBusiness/{client_business}', [ClientController::class, 'deleteClientBusiness'])->name("clients.deleteClientBusiness");
+    Route::get('clients/getClientBusinessDataTable/{client}',  [ClientController::class, 'getClientBusinessDataTable'])->name('clients.getClientBusinessDataTable');
+    Route::get('clients/downloadBusinessFile/{client_business}', [ClientController::class, 'downloadBusinessFile'])->name("clients.downloadBusinessFile");
+    Route::get('clients/getClientBusinessDataById/{client_business}', [ClientController::class, 'getClientBusinessDataById'])->name("clients.getClientBusinessDataById");
+
+    //-----------------------
+
     Route::get('return_requests/getReturnRequestReturnTypeDataTable/{return_request}',  [ReturnRequestController::class, 'getReturnRequestReturnTypeDataTable'])->name('return_requests.getReturnRequestReturnTypeDataTable');
+    Route::get('return_requests/getReturnRequestConceptDataTable/{return_request}',  [ReturnRequestController::class, 'getReturnRequestConceptDataTable'])->name('return_requests.getReturnRequestConceptDataTable');
     // Route::get('return_requests/sendCabMail/{return_request}', [ReturnRequestController::class, 'sendCabMail'])->name("return_requests.sendCabMail");
 
 
@@ -63,6 +74,14 @@ Route::middleware("auth")->group(function () {
     Route::post('return_requests/addReturnRequestType/{return_request}', [ReturnRequestController::class, 'addReturnRequestType'])->name("return_requests.addReturnRequestType");
     Route::put('return_requests/editReturnRequestType/{return_request_return_type}', [ReturnRequestController::class, 'editReturnRequestType'])->name("return_requests.editReturnRequestType");
     Route::delete('return_requests/deleteReturnRequestType/{return_request_return_type}', [ReturnRequestController::class, 'deleteReturnRequestType'])->name("return_requests.deleteReturnRequestType");
+
+
+    Route::get('return_requests/getAddReturnConceptModal', [ReturnRequestController::class, 'getAddReturnConceptModal'])->name("return_requests.getAddReturnConceptModal");
+    Route::get('return_requests/getEditReturnConceptModal/{return_request_concept}', [ReturnRequestController::class, 'getEditReturnConceptModal'])->name("return_requests.getEditReturnConceptModal");
+    
+    Route::post('return_requests/addReturnRequestConcept/{return_request}', [ReturnRequestController::class, 'addReturnRequestConcept'])->name("return_requests.addReturnRequestConcept");
+    Route::put('return_requests/editReturnRequestConcept/{return_request_concept}', [ReturnRequestController::class, 'editReturnRequestConcept'])->name("return_requests.editReturnRequestConcept");
+    Route::delete('return_requests/deleteReturnRequestConcept/{return_request_concept}', [ReturnRequestController::class, 'deleteReturnRequestConcept'])->name("return_requests.deleteReturnRequestConcept");
 
 
     Route::middleware(['permission'])->group(function () {
@@ -78,7 +97,6 @@ Route::middleware("auth")->group(function () {
         //Empresas
         Route::resource('companies', CompanyController::class);
         Route::resource('groups', GroupController::class);
-        Route::resource('account_statuses', AccountStatusController::class);
         Route::resource('intermediaries', IntermediaryController::class);
         Route::resource('company_levels', CompanyLevelController::class);
         Route::resource('bank_separations', BankSeparationController::class);

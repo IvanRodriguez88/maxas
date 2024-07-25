@@ -23,7 +23,7 @@
 </div>
 
 <div class="row mb-2">
-    <div class="col-6">
+    <div class="col-12">
         @include("components.custom.forms.input", [
             "id" => "name",
             "name" => "name",
@@ -33,17 +33,6 @@
             "label" => "Nombre",
             "required" => true,
             "invalid_feedback" => "El campo es requerido"
-        ])
-    </div>
-
-    <div class="col-6">
-        @include("components.custom.forms.input", [
-            "id" => "account_number",
-            "name" => "account_number",
-            "type" => "number",
-            "placeholder" => "Número de cuenta o clabe interbancaria...",
-            "value" => isset($promotor) ? $promotor->account_number :  old("account_number"),
-            "label" => "Cuenta o Clabe",
         ])
     </div>
 </div>

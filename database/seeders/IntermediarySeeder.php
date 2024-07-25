@@ -16,10 +16,10 @@ class IntermediarySeeder extends Seeder
     public function run()
     {
         Intermediary::create([
-            "name" => "Caballero"
+            "name" => "Play"
         ]);
         Intermediary::create([
-            "name" => "Play"
+            "name" => "Caballero"
         ]);
     }
 }

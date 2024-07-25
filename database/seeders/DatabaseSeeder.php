@@ -15,7 +15,6 @@ use Database\Seeders\BankSeeder;
 use Database\Seeders\CurrencyTypeSeeder;
 use Database\Seeders\AccountSeeder;
 use Database\Seeders\GroupSeeder;
-use Database\Seeders\AccountStatusSeeder;
 use Database\Seeders\IntermediarySeeder;
 use Database\Seeders\CompanyLevelSeeder;
 use Database\Seeders\BankSeparationSeeder;
@@ -27,6 +26,8 @@ use Database\Seeders\ReturnBaseSeeder;
 use Database\Seeders\PromotorSeeder;
 use Database\Seeders\ReturnRequestStatusSeeder;
 use Database\Seeders\RequestTypeSeeder;
+use Database\Seeders\CfdiUseSeeder;
+use Database\Seeders\UnitTypeSeeder;
 
 
 class DatabaseSeeder extends Seeder
@@ -52,18 +53,21 @@ class DatabaseSeeder extends Seeder
             CurrencyTypeSeeder::class,
             AccountSeeder::class,
             GroupSeeder::class,
-            AccountStatusSeeder::class,
             IntermediarySeeder::class,
             CompanyLevelSeeder::class,
             BankSeparationSeeder::class,
             CompanySeeder::class,
             ClientTypeSeeder::class,
-            ClientSeeder::class,
             ReturnTypeSeeder::class,
             ReturnBaseSeeder::class,
             PromotorSeeder::class,
+            ClientSeeder::class,
             ReturnRequestStatusSeeder::class,
             RequestTypeSeeder::class,
+            PaymentMethodSeeder::class,
+            PaymentWaySeeder::class,
+            CfdiUseSeeder::class,
+            UnitTypeSeeder::class,
         ]);
     }
 }

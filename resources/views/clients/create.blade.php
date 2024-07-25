@@ -25,6 +25,7 @@
                     <div class="d-flex justify-content-center">
                         <div class="w-100">
                             @include("clients.fields")
+                            <h4 class="text-secondary text-center mb-3">Las razones sociales se agregan al guardar el cliente</h4>
                             <div class="d-flex justify-content-end gap-2">
                                 <a href="{{route('clients.index')}}" class="btn btn-dark">Cancelar</a>
                                 <button type="submit" class="btn btn-primary">Guardar</button>

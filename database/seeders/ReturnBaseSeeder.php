@@ -16,20 +16,13 @@ class ReturnBaseSeeder extends Seeder
     public function run()
     {
         ReturnBase::create([
-            "name" => "T",
+            "name" => "Total",
             "description" => "Sobre total"
         ]);
         ReturnBase::create([
-            "name" => "ST",
+            "name" => "Subtotal",
             "description" => "Sobre subtotal"
         ]);
-        ReturnBase::create([
-            "name" => "IVA",
-            "description" => "Sobre IVA"
-        ]);
-        ReturnBase::create([
-            "name" => "STR",
-            "description" => "Sobre total a retornar"
-        ]);
+        
     }
 }

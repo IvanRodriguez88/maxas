@@ -10,8 +10,7 @@ class Promotor extends Model
     use HasFactory;
     
     protected $fillable = [
-        'name', 'account_number',
-        'comission_ban', 'comission_flu', 'comission_nom',
+        'name', 'comission_ban', 'comission_flu', 'comission_nom',
         'user_id', 'balance',
         'is_active', 'created_by', 'updated_by'];
 

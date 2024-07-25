@@ -28,6 +28,7 @@ class ReturnRequestRequest extends FormRequest
             'company_id' => 'required',
             'account_id' => 'required',
             'return_base_id' => 'required',
+            'request_type_id' => 'required',
             'client_payment_proof' => 'file|mimes:pdf|max:2048',
         ];
     }
@@ -40,6 +41,7 @@ class ReturnRequestRequest extends FormRequest
             'company_id' => 'Empresa',
 			'account_id' => 'Cuenta',
             'return_base_id' => 'Base de retorno',
+            'request_type_id' => 'Tipo de solicitud',
             'client_payment_proof' => 'Comprobante de pago'
 		];
 	}

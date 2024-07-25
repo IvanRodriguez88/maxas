@@ -42,12 +42,6 @@ class ClientRequest extends FormRequest
 				Rule::unique('users')->ignore($userId), // Ignorar el correo electrónico del usuario actual
             ],
 			'password' => ($this->isMethod('put') ? 'nullable|' : 'required|') . 'max:255', // Hacer el campo password opcional en edición
-            'rfc' => 'required',
-            'street_and_number' => 'required',
-            'cologne' => 'required',
-            'state' => 'required',
-            'city' => 'required',
-            'postal_code' => 'required',
             'comission_ban' => 'required',
             'comission_flu' => 'required',
             'comission_nom' => 'required'

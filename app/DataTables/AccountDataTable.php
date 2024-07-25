@@ -56,19 +56,13 @@ class AccountDataTable extends DataTable
     public function query(Account $model): QueryBuilder
     {
         return $model->select(
-			'accounts.id',
-            'accounts.account_number',
-			'accounts.clabe',
-            'accounts.ava',
-			'accounts.swift',
-            'accounts.balance',
-			'accounts.created_at',
-            'accounts.updated_at',
-			'accounts.is_active',
+			'accounts.*',
 			'banks.name as bank_id',
+			'bank_separations.name as bank_separation_id',
             'currency_types.name as currency_type_id'
 		)
 		->leftjoin('banks', 'accounts.bank_id', '=', 'banks.id')
+        ->leftjoin('bank_separations', 'accounts.bank_separation_id', '=', 'bank_separations.id')
         ->leftjoin('currency_types', 'accounts.currency_type_id', '=', 'currency_types.id')
 		->newQuery();
     }
@@ -133,13 +127,14 @@ class AccountDataTable extends DataTable
             ->title('Id')
             ->searchable(false)
             ->visible(false),
+            Column::make('bank_id')->title("Banco")->name("banks.name"),
             Column::make('account_number')->title("Número de cuenta"),
             Column::make('clabe')->title("Clabe interbancaria"),
+            Column::make('bank_separation_id')->title("Tipo de banco"),
+            Column::make('currency_type_id')->title("Moneda")->name("currency_types.name"),
+            Column::make('balance')->title("Saldo")->className("text-end"),
             Column::make('ava')->title("Ava"),
             Column::make('swift')->title("Swift"),
-            Column::make('balance')->title("Saldo")->className("text-end"),
-            Column::make('bank_id')->title("Banco")->name("banks.name"),
-            Column::make('currency_type_id')->title("Moneda")->name("currency_types.name"),
 
             Column::make('created_at')->searchable(false)->title("Fecha creado"),
             Column::make('updated_at')->searchable(false)->title("Fecha editado"),

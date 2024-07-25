@@ -55,8 +55,10 @@ class ClientDataTable extends DataTable
         return $model->select(
             'clients.*',
             'client_types.name as client_type_id',
+            'users.email as email',
 		)
 		->leftjoin('client_types', 'clients.client_type_id', '=', 'client_types.id')
+        ->leftjoin('users', 'clients.user_id', '=', 'users.id')
 		->newQuery();
     }
 
@@ -121,9 +123,7 @@ class ClientDataTable extends DataTable
             ->searchable(false)
             ->visible(false),
             Column::make('name')->title("Nombre"),
-            Column::make('rfc')->title("RFC"),
-            Column::make('state')->title("Estado"),
-            Column::make('city')->title("Ciudad"),
+            Column::make('email')->title("Correo electrónico"),
             Column::make('client_type_id')->title("Tipo de cliente"),
             Column::make('created_at')->searchable(false)->title("Fecha creado"),
             Column::make('updated_at')->searchable(false)->title("Fecha editado"),

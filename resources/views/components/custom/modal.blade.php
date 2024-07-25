@@ -10,7 +10,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-primary" id="btnModalSubmit">Guardar</button>
+                <button class="btn btn-primary" id="{{ $btnSubmitId }}">Guardar</button>
             </div>
         </div>
     </div>

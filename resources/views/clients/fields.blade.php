@@ -59,87 +59,9 @@
     </div>
 </div>
 
-<div class="row mb-2">
-    <div class="col-6">
-        @include("components.custom.forms.input", [
-            "id" => "rfc",
-            "name" => "rfc",
-            "type" => "text",
-            "placeholder" => "RFC...",
-            "value" => isset($client) ? $client->rfc :  old("rfc"),
-            "label" => "RFC",
-            "required" => true,
-            "invalid_feedback" => "El campo es requerido"
-        ])
-    </div>
-    <div class="col-6">
-        @include("components.custom.forms.input", [
-            "id" => "street_and_number",
-            "name" => "street_and_number",
-            "type" => "text",
-            "placeholder" => "Calle y número...",
-            "value" => isset($client) ? $client->street_and_number :  old("street_and_number"),
-            "label" => "Calle y número",
-            "required" => true,
-            "invalid_feedback" => "El campo es requerido"
-        ])
-    </div>
-</div>
-
-<div class="row mb-2">
-    <div class="col-3">
-        @include("components.custom.forms.input", [
-            "id" => "cologne",
-            "name" => "cologne",
-            "type" => "text",
-            "placeholder" => "Colonia...",
-            "value" => isset($client) ? $client->cologne :  old("cologne"),
-            "label" => "Colonia",
-            "required" => true,
-            "invalid_feedback" => "El campo es requerido"
-        ])
-    </div>
-    <div class="col-3">
-        @include("components.custom.forms.input", [
-            "id" => "state",
-            "name" => "state",
-            "type" => "text",
-            "placeholder" => "Estado...",
-            "value" => isset($client) ? $client->state :  old("state"),
-            "label" => "Estado",
-            "required" => true,
-            "invalid_feedback" => "El campo es requerido"
-        ])
-    </div>
-    <div class="col-3">
-        @include("components.custom.forms.input", [
-            "id" => "city",
-            "name" => "city",
-            "type" => "text",
-            "placeholder" => "Ciudad...",
-            "value" => isset($client) ? $client->city :  old("city"),
-            "label" => "Ciudad",
-            "required" => true,
-            "invalid_feedback" => "El campo es requerido"
-        ])
-    </div>
-    <div class="col-3">
-        @include("components.custom.forms.input", [
-            "id" => "postal_code",
-            "name" => "postal_code",
-            "type" => "text",
-            "placeholder" => "Código postal...",
-            "value" => isset($client) ? $client->postal_code :  old("postal_code"),
-            "label" => "Código postal",
-            "required" => true,
-            "invalid_feedback" => "El campo es requerido"
-        ])
-    </div>
-</div>
-
 <hr>
 <div class="mb-3 mt-3">
-    <label>% de comisiones <span class="text-danger">*</span></label>
+    <label>% total de comisiones cobradas al cliente<span class="text-danger">*</span></label>
     <div class="input-group">
         <span class="input-group-text">Bancarización / Flujo / Nóminas</span>
         <input value="{{isset($client) ? $client->comission_ban :  old('comission_ban')}}" type="number" id="comission_ban" name="comission_ban" class="form-control" placeholder="Bancarización" required>
@@ -160,9 +82,9 @@
         ])
     </div>
     <div class="col-8">
-        <p id="commission_text" style="margin-top: 35px" class="text-secondary text-center">Las comisiones cobradas por el proveedor al cliente se activan al seleccionar un proveedor</p>
+        <p id="commission_text" style="margin-top: 35px" class="text-secondary text-center">Las comisiones del promotor se activan al seleccionar un promotor</p>
         <div id="commission_pm" class="d-none">
-            <label>% de comisiones cobradas al cliente por el promotor</label>
+            <label>% de comisiones que se lleva el promotor</label>
             <div class="input-group">
                 <span class="input-group-text">Bancarización / Flujo / Nóminas</span>
                 <input value="{{isset($client) ? $client->comission_ban_promotor :  old('comission_ban_promotor')}}" type="number" id="comission_ban_promotor" name="comission_ban_promotor" class="form-control" placeholder="Bancarización">
@@ -172,7 +94,14 @@
         </div>
     </div>
 </div>
-
+<div class="mb-2">
+    @include("components.custom.forms.input-check", [
+        "id" => "is_active",
+        "name" => "is_active",
+        "checked" => isset($client) ? $client->is_active :  true,
+        "label" => "Activo",
+    ])
+</div>
 <hr>
 <h4>Empresas disponibles para cliente</h4>
 <table id="client_companies-table" class="table">
@@ -207,11 +136,4 @@
 </table>
 
 
-<div class="mb-2">
-    @include("components.custom.forms.input-check", [
-        "id" => "is_active",
-        "name" => "is_active",
-        "checked" => isset($client) ? $client->is_active :  true,
-        "label" => "Activo",
-    ])
-</div>
+

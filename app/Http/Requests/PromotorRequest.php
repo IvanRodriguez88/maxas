@@ -43,7 +43,6 @@ class PromotorRequest extends FormRequest
             'comission_ban' => 'required|numeric|min:0|max:100',
             'comission_flu' => 'required|numeric|min:0|max:100',
             'comission_nom' => 'required|numeric|min:0|max:100',
-            'account_number' => 'required',
             'balance' => 'numeric',
         ];
     }

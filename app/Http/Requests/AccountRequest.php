@@ -26,10 +26,7 @@ class AccountRequest extends FormRequest
         return [
             'currency_type_id' => 'required',
             'bank_id' => 'required',
-            'account_number' => 'required|min:10|max:12',
-            'clabe' => 'required|min:16|max:18',
-            'ava' => 'required',
-            'swift' => 'required'
+            'bank_separation_id' => 'required',
         ];
     }
 
@@ -39,10 +36,7 @@ class AccountRequest extends FormRequest
 		return [
 			'currency_type_id' => 'Tipo de moneda',
             'bank_id' => 'Banco',
-            'account_number' => 'Número de cuenta',
-            'clabe' => 'Clabe interbancaria',
-            'ava' => 'AVA',
-            'swift' => 'SWIFT'
+            'bank_separation_id' => 'Tipo de banco',
 		];
 	}
 }

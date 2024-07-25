@@ -18,8 +18,6 @@ class AccountSeeder extends Seeder
         Account::create([
             "account_number" => "123456789012",
             "clabe" => "XXXX1234XXXX1234",
-            "ava" => "1234",
-            "swift" => "5678",
             "bank_id" => 1,
             "currency_type_id" => 1,
             "balance" => 315000
@@ -30,8 +28,8 @@ class AccountSeeder extends Seeder
             "clabe" => "XXXX1234XXXX1234",
             "ava" => "4411",
             "swift" => "2233",
-            "bank_id" => 1,
-            "currency_type_id" => 1,
+            "bank_id" => 2,
+            "currency_type_id" => 2,
             "balance" => 189200
         ]);
     }

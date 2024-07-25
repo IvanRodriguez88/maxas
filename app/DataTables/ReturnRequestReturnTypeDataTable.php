@@ -34,6 +34,9 @@ class ReturnRequestReturnTypeDataTable extends DataTable
         })
         ->editColumn('updated_at', function($row) {
             return date("d/m/Y H:i", strtotime($row->updated_at));
+        })
+        ->editColumn('amount', function($row) {
+            return "$ ".number_format($row->amount, 2, '.', ',');
         });
 
         $datatable->addColumn('action', function($row){

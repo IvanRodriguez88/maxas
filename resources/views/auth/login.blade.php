@@ -8,7 +8,6 @@
     <x-slot:headerFiles>
         <!--  BEGIN CUSTOM STYLE FILE  -->
         @vite(['resources/scss/light/assets/authentication/auth-boxed.scss'])
-        @vite(['resources/scss/dark/assets/authentication/auth-boxed.scss'])
 
         <style>
             #load_screen {

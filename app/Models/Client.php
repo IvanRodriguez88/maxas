@@ -10,7 +10,6 @@ class Client extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'user_id', 'client_type_id',
-    'rfc', 'street_and_number', 'cologne', 'state', 'city', 'postal_code',
     'comission_ban', 'comission_flu', 'comission_nom', 'promotor_id',
     'comission_ban_promotor', 'comission_flu_promotor', 'comission_nom_promotor',
     'return_base_id',
@@ -44,5 +43,10 @@ class Client extends Model
     public function user()
     {
         return $this->belongsTo("App\Models\User", "user_id");
+    }
+
+    public function clientBusinesses()
+    {
+        return $this->hasMany("App\Models\ClientBusiness");
     }
 }
