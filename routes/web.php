@@ -21,6 +21,8 @@ use App\Http\Controllers\ReturnBaseController;
 use App\Http\Controllers\PromotorController;
 use App\Http\Controllers\DashboardController;
 
+use App\Models\ReturnRequestStatus;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -83,6 +85,8 @@ Route::middleware("auth")->group(function () {
     Route::put('return_requests/editReturnRequestConcept/{return_request_concept}', [ReturnRequestController::class, 'editReturnRequestConcept'])->name("return_requests.editReturnRequestConcept");
     Route::delete('return_requests/deleteReturnRequestConcept/{return_request_concept}', [ReturnRequestController::class, 'deleteReturnRequestConcept'])->name("return_requests.deleteReturnRequestConcept");
 
+    Route::put('return_requests/changeStatus/{return_request}/{status_id}', [ReturnRequestController::class, 'changeStatus'])->name("return_requests.changeStatus");
+    Route::put('return_requests/updateIngresos/{return_request}', [ReturnRequestController::class, 'updateIngresos'])->name("return_requests.updateIngresos");
 
     Route::middleware(['permission'])->group(function () {
         Route::resource('users', UserController::class);

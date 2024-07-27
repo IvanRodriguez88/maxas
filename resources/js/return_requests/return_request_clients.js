@@ -6,8 +6,9 @@ $(document).ready(function(){
     
     if ($("#type").val() != "create") {
         $("#client_business_id").trigger("change");
+        
     }
-
+   
     function addAccountOptions(accounts) {
         let options = `<option disabled="" selected="" value="">Seleccione una opción...</option>`
         accounts.forEach(element => {
@@ -56,7 +57,7 @@ $(document).ready(function(){
         let method = "POST"
 
         if (this.checkValidity()) {
-            const form = $("#returnTypeModal").serialize()
+            const formData = new FormData($("#clientBusinessModalForm")[0]);
 
             if (type == "edit") {
                 url = $('meta[name="app-url"]').attr('content')+`/return_requests/editReturnRequestType/${return_request_return_type_id}`
@@ -65,7 +66,7 @@ $(document).ready(function(){
             $.ajax({
                 url: url,
                 type: method,
-                data: form,
+                data: formData,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                 },
@@ -100,7 +101,7 @@ $(document).ready(function(){
                         let dt = window.LaravelDataTables['return_request_return_types-table'];
                         dt.draw(false);
                         snackBar("Forma de retorno eliminada correctamente", "success")
-                        $("#total_return_types").html(`$ ${formatNumber(response.data.total_return)}`)
+                        $("#total_return_types").html(`$ ${formatNumber(response.data.total_sum_return_type)}`)
                         $("#rest_types").html(`$ ${formatNumber(response.data.total_return - response.data.total_sum_return_type)}`)
                     },error: function(xhr, textStatus, errorThrown) {
                         errorMessage(xhr.status, errorThrown)
@@ -250,4 +251,6 @@ $(document).ready(function(){
 
     })
 
+
+    
 })

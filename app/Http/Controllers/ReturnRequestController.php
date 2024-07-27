@@ -49,7 +49,8 @@ class ReturnRequestController extends Controller
         }else{
             $dataTable = new ReturnRequestDataTable();
             $returnRequestStatuses = ReturnRequestStatus::where("is_active", 1)->pluck("name", "id");
-            $allowAdd = auth()->user()->hasPermissions("return_requests.create");
+            // $allowAdd = auth()->user()->hasPermissions("return_requests.create");
+            $allowAdd = false;
             return $dataTable->render('return_requests.index', compact("allowAdd", "returnRequestStatuses"));
         }
 
@@ -96,6 +97,8 @@ class ReturnRequestController extends Controller
         //Buscar porcentaje de retorno en base al tipo de solicitud elegido
         $request_type_id = $request->request_type_id;
         $return_percentages = $this->getReturnPercentages($client, $request_type_id);
+        
+        $company = Company::find($request->company_id);
 
         $params = array_merge($request->all(), [
             'is_active' => 1,
@@ -104,14 +107,15 @@ class ReturnRequestController extends Controller
             'updated_by' => auth()->user()->id,
             'return_base_id' => $client->return_base_id,
             'return_percentage' => $return_percentages["total"],
-            'return_percentage_play' => $return_percentages["play"],
+            'return_percentage_play' => $return_percentages["play"] - $company->intermediary->comission_percentage ?? 0,
             'return_percentage_promotor' => $return_percentages["promotor"],
+            'intermediary_id' =>  $company->intermediary->id,
+            'return_percentage_intermediary' => $company->intermediary->comission_percentage ?? 0,
             'requires_invoice' => !is_null($request->requires_invoice),
 		]);
 
 		try {
             $return_request = ReturnRequest::create($params);
-            
             $message = "Solicitud de retorno creado correctamente";
 		} catch (\Illuminate\Database\QueryException $e) {
             $status = false;
@@ -142,11 +146,17 @@ class ReturnRequestController extends Controller
     {
         $status = true;
         $file = $request->file("client_payment_proof");
+        $return_status = 1; //Default incompleta
 
+
+        //Verificar que exista al menos 1 forma de retorno y 1 concepto y que tenga el comprobante de pago
+        if ($return_request->returnConcepts->count() > 0 && $return_request->returnTypes->count() > 0 && $file) {
+            $return_status = 2; //Por operar
+        }
 
         $params = array_merge($request->all(), [
             'requires_invoice' => !is_null($request->requires_invoice),
-            'return_request_status_id' => 2,
+            'return_request_status_id' => $return_status,
             "updated_by" => auth()->user()->id,
 		]);
 
@@ -189,12 +199,28 @@ class ReturnRequestController extends Controller
 
     public function show(ReturnRequest $return_request) 
     {
+        //Obtener badge del status
         $user = auth()->user();
-        if ($user->role_id == 2) {
-            return view("return_requests.show_client", compact("return_request"));
-        }else{
-            return view("return_requests.show_admin", compact("return_request"));
+        $view = "return_requests.show_ingresos";
+        switch ($user->role_id) {
+            case 2:
+                $view = "return_requests.show_client";
+                break;
+            case 5:
+                $view = "return_requests.show_operaciones";
+                break;
+            case 6:
+                $view = "return_requests.show_ingresos";
+                break;
+            case 7:
+                $view = "return_requests.show_mesa";
+                break;
+             case 8:
+                $view = "return_requests.show_egresos";
+                break;
         }
+        return view($view, compact("return_request"));
+        
      
     }
 
@@ -303,6 +329,7 @@ class ReturnRequestController extends Controller
             $return_request = $this->updateNumericValues($return_concept->return_request_id);
 		} catch (\Illuminate\Database\QueryException $e) {
             $status = false;
+            dd($e);
 			$message = $this->getErrorMessage($e, 'return_concepts');
 		}
         return $this->getResponse($status, $message, $return_request);
@@ -364,6 +391,37 @@ class ReturnRequestController extends Controller
                 ->header('Content-Disposition', 'inline; filename="'.basename($path).'"');
     }
 
+    public function changeStatus(ReturnRequest $return_request, $status_id)
+    {
+        $return_request->update([
+            "return_request_status_id" => $status_id,
+        ]);
+
+        return $return_request;
+    }
+
+    public function updateIngresos(Request $request, ReturnRequest $return_request)
+    {
+        $status = false;
+        $file = $request->file("bank_payment_proof");
+        dd($request->all());
+        if ($file) {
+            $filePath = $file->storeAs(
+                '',
+                'SR'.$return_request->id.'-comprobante_pago_banco'.".".$file->extension(),
+                'bank_payment_proofs'
+            );
+
+            $params['bank_payment_proof'] = $filePath;
+            $params["updated_by"] = auth()->user()->id;
+
+            $status = true;
+
+        }
+
+        return $this->getResponse($status, '', $return_request);
+
+    }
     public function sendCabMail(ReturnRequest $return_request)
     {
         $path = $return_request->client_payment_proof;
@@ -454,19 +512,18 @@ class ReturnRequestController extends Controller
         //Calcular comision de play
         $comission_play = ($base_total * $return_request->return_percentage_play) / 100;
         $comission_promotor = ($base_total * $return_request->return_percentage_promotor) / 100;
-        $comission_cab = 0;
+        $comission_intermediary = 0;
 
         //Si caballero es intermediario cobrar el .05 sobre total
-        if ($return_request->company->intermediary_id == 2) { //id 2 es caballero
-            $comission_cab = ($total * $return_request->return_percentage_caballero) / 100; //Por default .05%
+        if ($return_request->intermediary_id != null) { //id 2 es caballero
+            $comission_intermediary = ($total * $return_request->return_percentage_intermediary) / 100;
         }
 
         //La comision si hay de caballero se le resta a la de play
-        $comission_play -= $comission_cab;
-        $comission_charged = $comission_play + $comission_promotor + $comission_cab;
+        $comission_charged = $comission_play + $comission_promotor + $comission_intermediary;
 
         //Cuando es de caballero esto es lo que debe regresar caballero a play
-        $play_return = $total - $comission_cab; 
+        $play_return = $total - $comission_intermediary; 
 
         $total_return = $total - $comission_charged;
 
@@ -477,12 +534,11 @@ class ReturnRequestController extends Controller
             'comission_charged'=> $comission_charged, 
             'comission_play'=> $comission_play, 
             'comission_promotor'=> $comission_promotor, 
-            'comission_cab'=> $comission_cab, 
+            'comission_intermediary'=> $comission_intermediary, 
             'social_cost'=> 0,
             'total_return'=> $total_return,
             'play_return'=> $play_return,
         ]);
-
         return $return_request;
 
     }

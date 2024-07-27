@@ -65,6 +65,8 @@ class ReturnRequestReturnTypeDataTable extends DataTable
 		)
         ->leftjoin('banks', 'return_request_return_types.bank_id', '=', 'banks.id')
         ->leftjoin('return_types', 'return_request_return_types.return_type_id', '=', 'return_types.id')
+        ->where("return_request_return_types.return_request_id", $this->return_request_id)
+
 		->newQuery();
     }
     

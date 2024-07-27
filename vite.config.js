@@ -33,8 +33,13 @@ export default defineConfig({
                 'resources/js/filters.js',
                 'resources/js/autocomplete.js',
                 'resources/js/deleteRow.js',
+
                 'resources/js/return_requests/return_requests.js',
                 'resources/js/return_requests/return_request_clients.js',
+                'resources/js/return_requests/return_request_admin.js',
+                'resources/js/return_requests/return_request_operaciones.js',
+                'resources/js/return_requests/return_request_ingresos.js',
+
                 'resources/js/promotors/promotors.js',
                 'resources/js/clients/clients.js',
                 'resources/js/companies/companies.js',

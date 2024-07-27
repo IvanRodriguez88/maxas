@@ -29,5 +29,12 @@ class UserSeeder extends Seeder
             "password" => Hash::make("123"),
             "role_id" => 2
         ]);
+
+        User::create([
+            "name" => "Caballero",
+            "email" => "cab@play.com",
+            "password" => Hash::make("123"),
+            "role_id" => 4
+        ]);
     }
 }

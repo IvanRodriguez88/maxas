@@ -37,7 +37,7 @@
         <div class="col-md-4">
             <div class="card p-3">
                 <p><b>Nombre:</b> {{$client->name}}</p>
-                <p><b>Promotor:</b> {{isset($return_request) ? $return_request->promotor->name ?? "N/A" : $client->promotor->name}}</p>
+                <p><b>Promotor:</b> {{isset($return_request) ? $return_request->promotor->name ?? "N/A" : $client->promotor->name ?? "N/A"}}</p>
                 <p><b>Base de retorno:</b> {{$client->returnBase->name}}</p>
             </div>
             <div class="mt-2 ms-1">

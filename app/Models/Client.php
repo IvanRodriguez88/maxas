@@ -12,7 +12,7 @@ class Client extends Model
     protected $fillable = ['name', 'user_id', 'client_type_id',
     'comission_ban', 'comission_flu', 'comission_nom', 'promotor_id',
     'comission_ban_promotor', 'comission_flu_promotor', 'comission_nom_promotor',
-    'return_base_id',
+    'return_base_id', 'balance',
     'is_active', 'created_by', 'updated_by'];
 
     public function promotor()

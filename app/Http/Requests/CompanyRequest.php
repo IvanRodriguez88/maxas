@@ -26,7 +26,6 @@ class CompanyRequest extends FormRequest
     {
         return [
             'group_id' => 'required',
-            'intermediary_id' => 'required',
             'company_level_id' => 'required',
             'name' => 'required',
             'social_object' => 'required',
@@ -38,7 +37,6 @@ class CompanyRequest extends FormRequest
 	{
 		return [
 			'group_id' => 'Grupo',
-            'intermediary_id' => 'Intermediario',
             'company_level_id' => 'Nivel de empresa',
             'name' => 'Nombre',
             'social_object' => 'Objeto social',

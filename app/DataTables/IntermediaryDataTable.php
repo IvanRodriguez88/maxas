@@ -30,6 +30,9 @@ class IntermediaryDataTable extends DataTable
         ->editColumn('updated_at', function($row) {
             return date("d/m/Y H:i", strtotime($row->updated_at));
         })
+        ->editColumn('comission_percentage', function($row) {
+            return $row->comission_percentage." %";
+        })
         ->editColumn('is_active', function($row) {
             if (!$row->is_active) {
                 return '<span class="badge badge-danger mb-2 me-4">No</span>';
@@ -53,13 +56,10 @@ class IntermediaryDataTable extends DataTable
     public function query(Intermediary $model): QueryBuilder
     {
         return $model->select(
-			'intermediaries.id',
-            'intermediaries.name',
-            'intermediaries.description',
-			'intermediaries.created_at',
-            'intermediaries.updated_at',
-			'intermediaries.is_active',
+			'intermediaries.*',
+            'users.email as email',
 		)
+        ->leftjoin('users', 'intermediaries.user_id', '=', 'users.id')
 		->newQuery();
     }
     
@@ -125,7 +125,8 @@ class IntermediaryDataTable extends DataTable
             ->searchable(false)
             ->visible(false),
             Column::make('name')->title("Nombre"),
-            Column::make('description')->title("Descripción"),
+            Column::make('email')->title("Email"),
+            Column::make('comission_percentage')->title("Comisión cobrada")->className("text-center"),
             Column::make('created_at')->searchable(false)->title("Fecha creado"),
             Column::make('updated_at')->searchable(false)->title("Fecha editado"),
             Column::make('is_active')->title("Activo"),

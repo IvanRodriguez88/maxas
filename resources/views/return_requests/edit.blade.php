@@ -21,7 +21,7 @@
             <div class="card-body">
                 <h5 class="card-title">Modificar solicitud de retorno</h5>
                 <hr>
-                <form class="row g-3 needs-validation" novalidate method="POST" action="{{ route('return_requests.update', $return_request->id) }}" enctype="multipart/form-data">
+                <form id="return_request_edit-form" class="row g-3 needs-validation" novalidate method="POST" action="{{ route('return_requests.update', $return_request->id) }}" enctype="multipart/form-data">
                     @csrf
                     @method("PUT")
                     <div class="d-flex justify-content-center">

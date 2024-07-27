@@ -15,6 +15,7 @@
     <!-- END GLOBAL MANDATORY STYLES -->
 
     <div class="row layout-top-spacing">
+        <input type="hidden" id="return_request_id" value="{{ $return_request->id }}">
         <div class="d-flex justify-content-center">
             <div class="w-75">
                 <div class="card">
@@ -75,12 +76,6 @@
                                 <p><b>Banco:</b> {{$return_request->account->bank->name}}</p>
                                 <p><b>CLABE:</b> {{$return_request->account->clabe ?? "N/A"}}</p>
                                 <p><b>Número de cuenta:</b> {{$return_request->account->account_number ?? "N/A"}}</p>
-                                <div class="mt-3 mb-3">
-                                    <a id="file" target="_blank" href="{{ route('return_requests.downloadClientPaymentProof', $return_request->id) }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                                        <u>Comprobante de pago</u>
-                                    </a>
-                                </div>
                             </div>
                             <div class="p-3 w-50" style="border: 1px solid #bdbdbd; border-radius: 5px">
                                 <p><b>Subtotal: </b> $ {{ number_format($return_request->subtotal, 2, '.', ',') }}</p>
@@ -90,10 +85,67 @@
                                 <p class="text-primary"><b>Total a retornar:</b> $ {{ number_format($return_request->total_return, 2, '.', ',') }}</p>
                                 <p class="text-success"><b>Total pedido:</b> $ {{ number_format($return_request->getTotalSumReturnTypeAttribute(), 2, '.', ',') }}</p>
                                 <p><b>Resto:</b> $ {{ number_format($return_request->total_return - $return_request->getTotalSumReturnTypeAttribute(), 2, '.', ',') }}</p>
-
                             </div>
                         </div>
+                        <div class="row mt-3">
+                            <div class="col-md-7">
+                                <table class="table-custom">
+                                    <tbody>
+                                        <tr>
+                                            <td>TOTAL A RETORNAR</td>
+                                            <td>${{ number_format($return_request->total_return, 2, '.', ',') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>COSTO SOCIAL</td>
+                                            <td>${{ number_format($return_request->social_cost, 2, '.', ',') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>COMISIÓN COBRADA</td>
+                                            <td>${{ number_format($return_request->comission_charged, 2, '.', ',') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>COMISIÓN PLAY</td>
+                                            <td>${{ number_format($return_request->comission_play, 2, '.', ',') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>COMISIÓN PROMOTOR</td>
+                                            <td>${{ number_format($return_request->comission_promotor, 2, '.', ',') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>COMISIÓN TERCERO</td>
+                                            <td>${{ number_format($return_request->comission_intermediary, 2, '.', ',') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>RETORNO PLAY</td>
+                                            <td>${{ number_format($return_request->play_return, 2, '.', ',') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>TOTAL DE FACTURA</b></td>
+                                            <td><b>${{ number_format($return_request->total_invoice, 2, '.', ',') }}</b></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-5">
+                                <p><b>Base de retorno:</b> {{$return_request->returnBase->name}}</p>
+                                <p><b>Porcentaje de retorno:</b> {{$return_request->return_percentage}}%</p>
+                                <p><b>Comisión play:</b> {{$return_request->return_percentage_play}}%</p>
+                                <p><b>Comisión promotor:</b> {{$return_request->return_percentage_promotor}}%</p>
 
+                                @if ($return_request->intermediary_id != null)
+                                    <p><b>Comisión {{$return_request->intermediary->name}} sobre T:</b> {{$return_request->return_percentage_intermediary}}%</p>
+                                    <p class="text-secondary">La comisión de {{$return_request->intermediary->name}} es tomada del % total de Play</p>
+                                @else
+                                    <p>Sin terceros (intermediarios)</p>
+                                @endif
+                               <div class="mt-4">
+                                    <a id="file" target="_blank" href="{{ route('return_requests.downloadClientPaymentProof', $return_request->id) }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                        <u>Comprobante de pago</u>
+                                    </a>
+                               </div>
+                            </div>
+                        </div>
                         <hr>
                         <p><b>Conceptos</b></p>
                             <table id="concepts-table" class="table dataTable no-footer">
@@ -118,7 +170,6 @@
                                     @endforeach
                                 </tbody>
                             </table>
-
                         <hr>
                         <p><b>Formas de retorno</b></p>
                         <table id="returns-table" class="table">
@@ -139,13 +190,15 @@
                                         <td>{{$return_type->account_number}}</td>
                                         <td>${{number_format($return_type->amount, 2, '.', ',')}}</td>
                                         <td>{{$return_type->reference}}</td>
+
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
 
                     </div>
-                    <div class="d-flex justify-content-end gap-2 m-3">
+                    <div class="d-flex justify-content-between gap-2 m-3">
+                        <a id="btnAccept" class="btn btn-success">Pasar a ingresos</a>
                         <a href="{{route('return_requests.index')}}" class="btn btn-dark">Regresar</a>
                     </div>
                 </div>
@@ -156,20 +209,7 @@
 
     <!--  BEGIN CUSTOM SCRIPTS FILE  -->
     <x-slot:footerFiles>
-        <script>
-            $(document).ready(function(){
-                $("#concepts-table").DataTable({
-                    searching: false, 
-                    lengthChange: false,
-                    paging: false
-                })
-                $("#returns-table").DataTable({
-                    searching: false, 
-                    lengthChange: false,
-                    paging: false
-                })
-            })
-        </script>
+        @vite(['resources/js/return_requests/return_request_admin.js'])
     </x-slot>
     <!--  END CUSTOM SCRIPTS FILE  -->
 </x-base-layout>

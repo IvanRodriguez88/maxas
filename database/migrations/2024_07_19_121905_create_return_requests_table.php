@@ -25,6 +25,9 @@ return new class extends Migration
             $table->unsignedBigInteger('account_id')->nullable();
             $table->foreign('account_id')->references('id')->on('accounts');
 
+            $table->unsignedTinyInteger('intermediary_id')->nullable();
+            $table->foreign('intermediary_id')->references('id')->on('intermediaries');
+
             $table->unsignedBigInteger('promotor_id')->nullable();
             $table->foreign('promotor_id')->references('id')->on('promotors');
             
@@ -52,14 +55,14 @@ return new class extends Migration
             $table->float("comission_charged")->nullable()->comment("Comisión cobrada");
             $table->float("social_cost")->nullable()->comment("Costo social");
             $table->float("comission_promotor")->nullable()->comment("Comisión de promotor");
-            $table->float("comission_cab")->nullable()->comment("Comisión de caballero");
+            $table->float("comission_intermediary")->nullable()->comment("Comisión de caballero");
             $table->float("comission_play")->nullable()->comment("Comisión de play");
 
             $table->float("play_return")->nullable()->comment("Retorno play");
             $table->float("return_percentage")->nullable()->comment("Porcentaje de retorno total");
             $table->float("return_percentage_promotor")->nullable()->comment("Porcentaje de retorno para promotor");
             $table->float("return_percentage_play")->nullable()->comment("Porcentaje de retorno para play");
-            $table->float("return_percentage_caballero")->default(.05)->nullable()->comment("Porcentaje de retorno para caballero");
+            $table->float("return_percentage_intermediary")->default(.5)->nullable()->comment("Porcentaje de retorno para caballero");
 
             $table->float("subtotal")->nullable()->comment("Subtotal");
             $table->float("iva")->nullable()->comment("IVA");

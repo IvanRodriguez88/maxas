@@ -32,9 +32,11 @@ return new class extends Migration
             $table->foreign('return_base_id')->references('id')->on('return_bases');
 
             //Comisiones que el promotor cobra al cliente
-            $table->float('comission_ban_promotor')->nullable()->comment("Comisión de bancarizacion que el promotor cobra al cliente en %");
-            $table->float('comission_flu_promotor')->nullable()->comment("Comisión de flujo que el promotor cobra al cliente en %");
-            $table->float('comission_nom_promotor')->nullable()->comment("Comisión de nominas que el promotor cobra al cliente en %");
+            $table->float('comission_ban_promotor')->default(0)->nullable()->comment("Comisión de bancarizacion que el promotor cobra al cliente en %");
+            $table->float('comission_flu_promotor')->default(0)->nullable()->comment("Comisión de flujo que el promotor cobra al cliente en %");
+            $table->float('comission_nom_promotor')->default(0)->nullable()->comment("Comisión de nominas que el promotor cobra al cliente en %");
+
+            $table->float('balance')->default(0);
 
             //Usuario ligado a este cliente
             $table->unsignedSmallInteger('user_id')->nullable();

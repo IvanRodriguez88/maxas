@@ -70,6 +70,7 @@ class ReturnRequestConceptDataTable extends DataTable
             )
         ->leftjoin('return_requests', 'return_request_concepts.return_request_id', '=', 'return_requests.id')
         ->leftjoin('unit_types', 'return_request_concepts.unit_type_id', '=', 'unit_types.id')
+        ->where("return_request_concepts.return_request_id", $this->return_request_id)
 		->newQuery();
     }
     

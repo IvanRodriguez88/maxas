@@ -27,7 +27,7 @@
         @include("components.custom.forms.input", [
             "id" => "name",
             "name" => "name",
-            "type" => "name",
+            "type" => "text",
             "placeholder" => "Nombre...",
             "value" => isset($client) ? $client->name :  old("name"),
             "label" => "Nombre",
@@ -64,9 +64,9 @@
     <label>% total de comisiones cobradas al cliente<span class="text-danger">*</span></label>
     <div class="input-group">
         <span class="input-group-text">Bancarización / Flujo / Nóminas</span>
-        <input value="{{isset($client) ? $client->comission_ban :  old('comission_ban')}}" type="number" id="comission_ban" name="comission_ban" class="form-control" placeholder="Bancarización" required>
-        <input value="{{isset($client) ? $client->comission_flu :  old('comission_flu')}}" type="number" id="comission_flu" name="comission_flu" class="form-control" placeholder="Flujo" required>
-        <input value="{{isset($client) ? $client->comission_nom :  old('comission_nom')}}" type="number" id="comission_nom" name="comission_nom" class="form-control" placeholder="Nóminas" required>
+        <input value="{{isset($client) ? $client->comission_ban :  old('comission_ban')}}" step="0.01" type="number" id="comission_ban" name="comission_ban" class="form-control" placeholder="Bancarización" required>
+        <input value="{{isset($client) ? $client->comission_flu :  old('comission_flu')}}" step="0.01" type="number" id="comission_flu" name="comission_flu" class="form-control" placeholder="Flujo" required>
+        <input value="{{isset($client) ? $client->comission_nom :  old('comission_nom')}}" step="0.01" type="number" id="comission_nom" name="comission_nom" class="form-control" placeholder="Nóminas" required>
     </div>
 </div>
 
@@ -87,9 +87,9 @@
             <label>% de comisiones que se lleva el promotor</label>
             <div class="input-group">
                 <span class="input-group-text">Bancarización / Flujo / Nóminas</span>
-                <input value="{{isset($client) ? $client->comission_ban_promotor :  old('comission_ban_promotor')}}" type="number" id="comission_ban_promotor" name="comission_ban_promotor" class="form-control" placeholder="Bancarización">
-                <input value="{{isset($client) ? $client->comission_flu_promotor :  old('comission_flu_promotor')}}" type="number" id="comission_flu_promotor" name="comission_flu_promotor" class="form-control" placeholder="Flujo">
-                <input value="{{isset($client) ? $client->comission_nom_promotor :  old('comission_nom_promotor')}}" type="number" id="comission_nom_promotor" name="comission_nom_promotor" class="form-control" placeholder="Nóminas">
+                <input value="{{isset($client) ? $client->comission_ban_promotor :  old('comission_ban_promotor')}}" step="0.01" type="number" id="comission_ban_promotor" name="comission_ban_promotor" class="form-control" placeholder="Bancarización">
+                <input value="{{isset($client) ? $client->comission_flu_promotor :  old('comission_flu_promotor')}}" step="0.01" type="number" id="comission_flu_promotor" name="comission_flu_promotor" class="form-control" placeholder="Flujo">
+                <input value="{{isset($client) ? $client->comission_nom_promotor :  old('comission_nom_promotor')}}" step="0.01" type="number" id="comission_nom_promotor" name="comission_nom_promotor" class="form-control" placeholder="Nóminas">
             </div>
         </div>
     </div>

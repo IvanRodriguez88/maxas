@@ -193,17 +193,17 @@ class ReturnRequestDataTable extends DataTable
 
     public function getActions($row){
         $result = null;
-        if (auth()->user()->hasPermissions("return_requests.edit")) {
+        // if (auth()->user()->hasPermissions("return_requests.edit")) {
+        //     $result .= '
+        //         <a title="Editar" href='.route("return_requests.edit", $row->id).' class="btn btn-outline-secondary btn-icon ps-2 px-1">
+        //             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+        //         </a>
+        //     ';
+        // }
+        if (auth()->user()->hasPermissions("return_requests.show")) {
             $result .= '
-                <a title="Editar" href='.route("return_requests.edit", $row->id).' class="btn btn-outline-secondary btn-icon ps-2 px-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-                </a>
-            ';
-        }
-        if (auth()->user()->hasPermissions("return_requests.destroy")) {
-            $result .= '
-                <a onclick="deleteRow('.$row->id.')" title="Eliminar" class="btn btn-outline-danger btn-icon ps-2 px-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>        </a>
+                <a title="Ver" href='.route("return_requests.show", $row->id).' class="btn btn-outline-dark btn-icon ps-2 px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>                    
                 </a>
             ';
         }
@@ -219,11 +219,7 @@ class ReturnRequestDataTable extends DataTable
     public function getColumns(): array
     {
         $columns = [
-            Column::make('id')
-            ->title('Id')
-            ->searchable(false)
-            ->visible(false),
-
+            Column::make('id')->title('# Sol.'),
             Column::make('return_request_status_id')->title("Estado")->name("return_request_statuses.name"),
             Column::make('client_business_id')->title("Cliente")->name("client_businesses.business_name"),
             Column::make('request_type_id')->title("T. de Solicitud")->name("request_types.name"),

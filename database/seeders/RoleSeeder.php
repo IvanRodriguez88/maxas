@@ -17,17 +17,28 @@ class RoleSeeder extends Seeder
     {
         Role::create([
             "name" => "Admin",
-            "description" => "Admin"
         ]);
-
         Role::create([
             "name" => "Cliente",
-            "description" => "Cliente para hacer pre solicitudes"
         ]);
-
         Role::create([
             "name" => "Promotor",
         ]);
-       
+        Role::create([
+            "name" => "Intermediario",
+        ]);
+
+        Role::create([
+            "name" => "Operaciones",
+        ]);
+        Role::create([
+            "name" => "Ingresos",
+        ]);
+        Role::create([
+            "name" => "Mesa de control",
+        ]);
+        Role::create([
+            "name" => "Egresos",
+        ]);
     }
 }

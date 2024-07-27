@@ -3,6 +3,8 @@
 namespace App\DataTables;
 
 use App\Models\ReturnRequest;
+use App\Models\Client;
+
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -144,6 +146,8 @@ class ClientReturnRequestDataTable extends DataTable
      */
     public function query(ReturnRequest $model): QueryBuilder
     {
+        //Obtener clientId
+        $client = Client::where("user_id", auth()->user()->id)->first();
         return $model->select(
 			'return_requests.*',
             'companies.name as company_id',
@@ -160,6 +164,8 @@ class ClientReturnRequestDataTable extends DataTable
         ->leftjoin('banks', 'accounts.bank_id', '=', 'banks.id')
         ->leftjoin('return_bases', 'return_requests.return_base_id', '=', 'return_bases.id')
         ->leftjoin('return_request_statuses', 'return_requests.return_request_status_id', '=', 'return_request_statuses.id')
+
+        ->where("client_businesses.client_id", $client->id)
 		->newQuery();
     }
     
@@ -222,15 +228,11 @@ class ClientReturnRequestDataTable extends DataTable
     public function getColumns(): array
     {
         $columns = [
-            Column::make('id')
-            ->title('Id')
-            ->searchable(false)
-            ->visible(false),
-
+            Column::make('id')->title('# Sol.'),
             Column::make('return_request_status_id')->title("Estado")->name("return_request_statuses.name"),
             Column::make('company_id')->title("Empresa")->name("companies.name"),
             Column::make('account_id')->title("Cuenta a depositar")->name("banks.name"),
-            Column::make('promotor_id')->title("Promotor")->name("promotors.name"),
+            // Column::make('promotor_id')->title("Promotor")->name("promotors.name"),
             Column::make('return_base_id')->title("Base de retorno")->name("return_bases.name"),
             Column::make('date')->title("Fecha")->name("return_requests.date"),
             Column::make('requires_invoice')->title("Req. Fac")->className("text-center"),
