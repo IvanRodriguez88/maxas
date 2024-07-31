@@ -55,10 +55,8 @@ $(document).ready(function(){
         const type = $("#type").val()
         let url = $('meta[name="app-url"]').attr('content')+`/return_requests/addReturnRequestType/${return_request_id}`
         let method = "POST"
-
         if (this.checkValidity()) {
-            const formData = new FormData($("#clientBusinessModalForm")[0]);
-
+            const form = $("#returnTypeModal").serialize()
             if (type == "edit") {
                 url = $('meta[name="app-url"]').attr('content')+`/return_requests/editReturnRequestType/${return_request_return_type_id}`
                 method = "PUT"
@@ -66,7 +64,7 @@ $(document).ready(function(){
             $.ajax({
                 url: url,
                 type: method,
-                data: formData,
+                data: form,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                 },

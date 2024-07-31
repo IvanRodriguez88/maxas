@@ -69,6 +69,7 @@ return new class extends Migration
             $table->float("total_invoice")->nullable()->comment("Total de la factura");
 
             $table->string("client_payment_proof")->nullable()->comment("Archivo comprobante de pago");
+            $table->string("bank_payment_proof")->nullable()->comment("Archivo comprobante de pago del banco en ingresos");
 
             $table->unsignedTinyInteger('payment_method_id')->nullable();
             $table->foreign('payment_method_id')->references('id')->on('payment_methods');

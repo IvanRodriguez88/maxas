@@ -71,6 +71,8 @@ Route::middleware("auth")->group(function () {
     Route::get('return_requests/getAddReturnTypeModal', [ReturnRequestController::class, 'getAddReturnTypeModal'])->name("return_requests.getAddReturnTypeModal");
     Route::get('return_requests/getEditReturnTypeModal/{return_request_return_type}', [ReturnRequestController::class, 'getEditReturnTypeModal'])->name("return_requests.getEditReturnTypeModal");
     Route::get('return_requests/downloadClientPaymentProof/{return_request}', [ReturnRequestController::class, 'downloadClientPaymentProof'])->name("return_requests.downloadClientPaymentProof");
+    Route::get('return_requests/downloadBankPaymentProof/{return_request}', [ReturnRequestController::class, 'downloadBankPaymentProof'])->name("return_requests.downloadBankPaymentProof");
+    Route::get('return_requests/downloadDispersionVoucherFile/{return_request_return_type}', [ReturnRequestController::class, 'downloadDispersionVoucherFile'])->name("return_requests.downloadDispersionVoucherFile");
 
 
     Route::post('return_requests/addReturnRequestType/{return_request}', [ReturnRequestController::class, 'addReturnRequestType'])->name("return_requests.addReturnRequestType");
@@ -85,8 +87,14 @@ Route::middleware("auth")->group(function () {
     Route::put('return_requests/editReturnRequestConcept/{return_request_concept}', [ReturnRequestController::class, 'editReturnRequestConcept'])->name("return_requests.editReturnRequestConcept");
     Route::delete('return_requests/deleteReturnRequestConcept/{return_request_concept}', [ReturnRequestController::class, 'deleteReturnRequestConcept'])->name("return_requests.deleteReturnRequestConcept");
 
+    Route::get('return_requests/getAddDispersionVoucherFileModal/{return_request_return_type}', [ReturnRequestController::class, 'getAddDispersionVoucherFileModal'])->name("return_requests.getAddDispersionVoucherFileModal");
+    Route::post('return_requests/addDispersionVoucherFile/{return_request_return_type}', [ReturnRequestController::class, 'addDispersionVoucherFile'])->name("return_requests.addDispersionVoucherFile");
+
+
     Route::put('return_requests/changeStatus/{return_request}/{status_id}', [ReturnRequestController::class, 'changeStatus'])->name("return_requests.changeStatus");
     Route::put('return_requests/updateIngresos/{return_request}', [ReturnRequestController::class, 'updateIngresos'])->name("return_requests.updateIngresos");
+    Route::put('return_requests/updateMesaControl/{return_request}', [ReturnRequestController::class, 'updateMesaControl'])->name("return_requests.updateMesaControl");
+    Route::put('return_requests/updateEgresos/{return_request}', [ReturnRequestController::class, 'updateEgresos'])->name("return_requests.updateEgresos");
 
     Route::middleware(['permission'])->group(function () {
         Route::resource('users', UserController::class);

@@ -44,8 +44,8 @@
 #returns-table {
     width: 100%;
     
-    th:nth-child(1), td:nth-child(1) { width: 40%; } /* Beneficiario */
-    th:nth-child(4), td:nth-child(4) { width: 60%; } /* CLABE o Cuenta */
+    th:nth-child(1), td:nth-child(1) { width: 30%; } /* Beneficiario */
+    th:nth-child(4), td:nth-child(4) { width: 70%; } /* CLABE o Cuenta */
     
     td {
         word-wrap: break-word;

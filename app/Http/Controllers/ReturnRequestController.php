@@ -201,7 +201,8 @@ class ReturnRequestController extends Controller
     {
         //Obtener badge del status
         $user = auth()->user();
-        $view = "return_requests.show_ingresos";
+        $view = "return_requests.show_operadas";
+
         switch ($user->role_id) {
             case 2:
                 $view = "return_requests.show_client";
@@ -213,14 +214,19 @@ class ReturnRequestController extends Controller
                 $view = "return_requests.show_ingresos";
                 break;
             case 7:
-                $view = "return_requests.show_mesa";
+                $view = "return_requests.show_mesa_control";
                 break;
              case 8:
                 $view = "return_requests.show_egresos";
+                $returnRequestReturnTypeDataTable = new ReturnRequestReturnTypeDataTable($return_request->id);
+                $params = ['return_request' => $return_request->id];
+                $returnRequestReturnTypeDT = $this->getViewDataTable($returnRequestReturnTypeDataTable, 'return_requests', [], 'return_requests.getReturnRequestReturnTypeDataTable', $params);
+                
+                return view($view, compact("return_request", "returnRequestReturnTypeDT"));
+
                 break;
         }
         return view($view, compact("return_request"));
-        
      
     }
 
@@ -329,7 +335,6 @@ class ReturnRequestController extends Controller
             $return_request = $this->updateNumericValues($return_concept->return_request_id);
 		} catch (\Illuminate\Database\QueryException $e) {
             $status = false;
-            dd($e);
 			$message = $this->getErrorMessage($e, 'return_concepts');
 		}
         return $this->getResponse($status, $message, $return_request);
@@ -369,6 +374,42 @@ class ReturnRequestController extends Controller
         return $this->getResponse($status, $message, $return_request);
     }
 
+    //------------------------Dispersion vouchers---------------------------------
+
+    public function getAddDispersionVoucherFileModal(ReturnRequestReturnType $return_request_return_type)
+    {
+        return view("return_requests.modal-content-egresos", compact("return_request_return_type"));
+    }
+
+    public function addDispersionVoucherFile(Request $request, ReturnRequestReturnType $return_request_return_type)
+    {
+        $status = false;
+        $file = $request->file("dispersion_voucher_file");
+        $message = "No se cargó el comprobante";
+        $return_request = ReturnRequest::find($return_request_return_type->return_request_id);
+        if ($file) {
+            $filePath = $file->storeAs(
+                '',
+                'SR'.$return_request_return_type->id.'-comprobante_dispersion'.".".$file->extension(),
+                'dispersion_voucher_files'
+            );
+            $params['dispersion_voucher_file'] = $filePath;
+
+            try {
+                $return_request_return_type->update($params);
+                $message = "Comprobante cargado correctamente";
+                $status = true;
+            } catch (\Illuminate\Database\QueryException $e) {
+                $status = false;
+                $message = $this->getErrorMessage($e, 'return_requests');
+            }
+        }
+
+       
+        return $this->getResponse($status, $message, $return_request);
+    }
+
+
     public function getReturnRequestReturnTypeDataTable(ReturnRequest $return_request)
     {
         return (new ReturnRequestReturnTypeDataTable($return_request->id))->render('components.datatable');
@@ -391,6 +432,31 @@ class ReturnRequestController extends Controller
                 ->header('Content-Disposition', 'inline; filename="'.basename($path).'"');
     }
 
+    public function downloadBankPaymentProof(ReturnRequest $return_request)
+    {
+        $path = $return_request->bank_payment_proof;
+        $mimeType = Storage::disk('bank_payment_proofs')->mimeType($path);
+        $fileContent = Storage::disk('bank_payment_proofs')->get($path);
+
+        // Devolver la respuesta con el contenido del archivo y los encabezados adecuados
+        return response($fileContent, 200)
+                ->header('Content-Type', $mimeType)
+                ->header('Content-Disposition', 'inline; filename="'.basename($path).'"');
+    }
+
+    public function downloadDispersionVoucherFile(ReturnRequestReturnType $return_request_return_type)
+    {
+        $path = $return_request_return_type->dispersion_voucher_file;
+        $mimeType = Storage::disk('dispersion_voucher_files')->mimeType($path);
+        $fileContent = Storage::disk('dispersion_voucher_files')->get($path);
+
+        // Devolver la respuesta con el contenido del archivo y los encabezados adecuados
+        return response($fileContent, 200)
+                ->header('Content-Type', $mimeType)
+                ->header('Content-Disposition', 'inline; filename="'.basename($path).'"');
+    }
+    
+
     public function changeStatus(ReturnRequest $return_request, $status_id)
     {
         $return_request->update([
@@ -404,7 +470,6 @@ class ReturnRequestController extends Controller
     {
         $status = false;
         $file = $request->file("bank_payment_proof");
-        dd($request->all());
         if ($file) {
             $filePath = $file->storeAs(
                 '',
@@ -414,14 +479,34 @@ class ReturnRequestController extends Controller
 
             $params['bank_payment_proof'] = $filePath;
             $params["updated_by"] = auth()->user()->id;
+            $params["return_request_status_id"] = 4; //4 es mesa de control
 
             $status = true;
-
+            $return_request->update($params);
         }
 
         return $this->getResponse($status, '', $return_request);
-
     }
+
+    public function updateMesaControl(ReturnRequest $return_request)
+    {
+        $status = true;
+        $params["updated_by"] = auth()->user()->id;
+        $params["return_request_status_id"] = 5; //5 es egresos
+        $return_request->update($params);
+        return $this->getResponse($status, '', $return_request);
+    }
+
+    public function updateEgresos(ReturnRequest $return_request)
+    {
+        $status = true;
+        $params["updated_by"] = auth()->user()->id;
+        $params["return_request_status_id"] = 6; //5 es operada o finalizada
+        $return_request->update($params);
+        return $this->getResponse($status, '', $return_request);
+    }
+
+
     public function sendCabMail(ReturnRequest $return_request)
     {
         $path = $return_request->client_payment_proof;

@@ -11,7 +11,7 @@ class ReturnRequest extends Model
 
     protected $fillable = [
         'client_business_id', 'company_id', 'account_id', 'promotor_id', 'return_base_id', 'request_type_id', 'date', 'requires_invoice',
-        'invoice', 'total_return', 'comission_charged', 'subtotal', 'iva', 'social_cost', 'account_destiny_id', 'intermediary_id',
+        'invoice', 'total_return', 'comission_charged', 'subtotal', 'iva', 'social_cost', 'account_destiny_id', 'intermediary_id', 'bank_payment_proof',
         'return_percentage_play', 'return_percentage_promotor', 'return_percentage_intermediary', 'comission_promotor', 'comission_intermediary', 'comission_play', 'play_return',
         'return_percentage', 'return_base_id', 'total_invoice', 'client_payment_proof', 'return_request_status_id',
         'payment_method_id', 'payment_way_id', 'cfdi_use_id', 'origin_account',
@@ -93,6 +93,11 @@ class ReturnRequest extends Model
         return $this->returnTypes()->sum('amount');
     }
 
+    public function getTotalReturnedAttribute()
+    {
+        return $this->returnTypes()->whereNotNull("dispersion_voucher_file")->sum("amount");
+    }
+
     public function getStatusBadge()
     {
         switch ($this->return_request_status_id) {
@@ -118,6 +123,6 @@ class ReturnRequest extends Model
         return '<span class="badge badge-'.$color.' mb-2 me-4">'.$this->status->name.'</span>';
     }
 
-    protected $appends = ['total_sum_return_type'];
+    protected $appends = ['total_sum_return_type', 'total_returned'];
 
 }

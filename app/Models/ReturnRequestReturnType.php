@@ -10,7 +10,7 @@ class ReturnRequestReturnType extends Model
     use HasFactory;
 
     protected $fillable = ['return_request_id','beneficiary_name', 'bank_id',
-        'return_type_id', 'account_number', 'amount', 'reference',
+        'return_type_id', 'account_number', 'amount', 'reference', 'dispersion_voucher_file',
         'is_active', 'created_by', 'updated_by'];
 
     public function bank()

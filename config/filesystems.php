@@ -52,6 +52,10 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/bank_payment_proofs'),
         ],
+        'dispersion_voucher_files' => [
+            'driver' => 'local',
+            'root' => storage_path('app/dispersion_voucher_files'),
+        ],
         'business_files' => [
             'driver' => 'local',
             'root' => storage_path('app/business_files'),

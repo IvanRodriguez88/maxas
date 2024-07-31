@@ -31,6 +31,8 @@ return new class extends Migration
             $table->float("amount")->comment("Monto");
             $table->string("reference")->nullable()->comment("Referencia");
 
+            $table->string("dispersion_voucher_file")->nullable()->comment("Comprobante de dispersión");
+
             $table->timestamps();
             $table->string('notes', 1024)->nullable()->comment('Notas');    
             $table->boolean('is_active')->default(1)->comment('Muestra si la fila está activa');

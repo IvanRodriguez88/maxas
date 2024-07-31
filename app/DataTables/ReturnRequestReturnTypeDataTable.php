@@ -11,12 +11,13 @@ use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use App\Models\ReturnRequest;
 
 class ReturnRequestReturnTypeDataTable extends DataTable
 {
     public function __construct($return_request_id)
 	{
-		$this->return_request_id = $return_request_id;
+		$this->return_request = ReturnRequest::find($return_request_id);
 	}
 
     /**
@@ -55,17 +56,13 @@ class ReturnRequestReturnTypeDataTable extends DataTable
     public function query(ReturnRequestReturnType $model): QueryBuilder
     {
         return $model->select(
-			'return_request_return_types.id',
-			'return_request_return_types.beneficiary_name',
-            'return_request_return_types.account_number',
-			'return_request_return_types.amount',
-			'return_request_return_types.reference',
+			'return_request_return_types.*',
             'banks.name as bank_id',
             'return_types.name as return_type_id',
 		)
         ->leftjoin('banks', 'return_request_return_types.bank_id', '=', 'banks.id')
         ->leftjoin('return_types', 'return_request_return_types.return_type_id', '=', 'return_types.id')
-        ->where("return_request_return_types.return_request_id", $this->return_request_id)
+        ->where("return_request_return_types.return_request_id", $this->return_request->id)
 
 		->newQuery();
     }
@@ -101,16 +98,31 @@ class ReturnRequestReturnTypeDataTable extends DataTable
 
     public function getActions($row){
         $result = null;
-        $result .= '
-            <a title="Editar" onclick="getEditReturnTypeModal('.$row->id.')" class="btn btn-outline-secondary btn-icon ps-2 px-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-            </a>
-        ';
-        $result .= '
-            <a onclick="deleteReturnType('.$row->id.')" title="Eliminar" class="btn btn-outline-danger btn-icon ps-2 px-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>        </a>
-            </a>
-        ';
+        if ($this->return_request->return_request_status_id == 5) {
+            if ($row->dispersion_voucher_file == null) {
+                $result .= '
+                    <a title="Agregar archivo" onclick="getAddDispersionVoucherFileModal('.$row->id.')" class="btn btn-outline-dark btn-icon ps-2 px-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-plus"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>                </a>
+                    ';
+            }else{
+                $result .= '
+                        <a id="file" target="_blank" href="'.route("return_requests.downloadDispersionVoucherFile", $row->id).'">
+                            <u>Ver comprobante</u>
+                        </a>
+                    ';
+            }
+        }else {
+            $result .= '
+                <a title="Editar" onclick="getEditReturnTypeModal('.$row->id.')" class="btn btn-outline-secondary btn-icon ps-2 px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                </a>
+            ';
+            $result .= '
+                <a onclick="deleteReturnType('.$row->id.')" title="Eliminar" class="btn btn-outline-danger btn-icon ps-2 px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>        </a>
+                </a> 
+            ';
+        }
         return $result;
 	}
 
