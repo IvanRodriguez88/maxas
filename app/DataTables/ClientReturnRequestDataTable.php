@@ -39,7 +39,7 @@ class ClientReturnRequestDataTable extends DataTable
             return '<span class="badge badge-success mb-2 me-4">Sí</span>';
         })
         ->editColumn('date', function($row) {
-            return date("d/m/Y", strtotime($row->date));
+            return date("d/m/Y H:i:s", strtotime($row->date));
         })
         ->editColumn('subtotal', function($row) {
             return "$ ".number_format($row->subtotal, 2, '.', ',');
@@ -83,41 +83,40 @@ class ClientReturnRequestDataTable extends DataTable
         ->editColumn('requires_invoice', function($row) {
             return $row->requires_invoice == 1 ? "Sí" : "No";
         })
-        ->editColumn('return_request_status_id', function($row) {
-            switch ($row->return_request_status_id) {
-                case 'Incompleta':
-                    $color = "danger";
-                    break;
-                case 'Ingresos':
-                    $color = "primary";
-                    break;
-                case 'Egresos':
-                    $color = "info";
-                    break;
-                case 'Mesa de control':
-                    $color = "dark";
-                    break;
-                case 'Egresos':
-                    $color = "success";
-                    break;
-                default:
-                    $color = "secondary";
-                    break;
+        ->editColumn('invoice', function($row) {
+            if ($row->requires_invoice == 1) {
+                if ($row->invoice == null) {
+                    return '<span class="badge badge-danger mb-2 me-4">Faltante</span>';
+                }else{
+                    $route = route("return_requests.downloadInvoice", $row->id);
+                    return '
+                        <a href="'.$route.'" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </a>
+                    ';
+                }
             }
-            return '<span class="badge badge-'.$color.' mb-2 me-4">'.$row->return_request_status_id.'</span>';
+        })
+        ->editColumn('return_request_status_id', function($row) {
+            return ReturnRequest::find($row->id)->getStatusBadge();
         })
         ->editColumn('client_payment_proof', function($row) {
             $route = route("return_requests.downloadClientPaymentProof", $row->id);
-            return '
-                <a href="'.$route.'" target="_blank">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                </a>
-            ';
+
+            if ($row->client_payment_proof != null) {
+                return '
+                    <a href="'.$route.'" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    </a>
+                ';
+            }
+
+            return '<span class="badge badge-danger mb-2 me-4">Faltante</span>';
         });
 
         $datatable->addColumn('action', function($row){
             return $this->getActions($row);
-        })->rawColumns(["action", "is_active", "client_payment_proof", "return_request_status_id"]);
+        })->rawColumns(["action", "is_active", "client_payment_proof", "return_request_status_id", "invoice"]);
 
         $datatable->filter(function($query) {
             if(request('initial_date') !== null){
@@ -150,12 +149,12 @@ class ClientReturnRequestDataTable extends DataTable
         $client = Client::where("user_id", auth()->user()->id)->first();
         return $model->select(
 			'return_requests.*',
-            'companies.name as company_id',
-            'client_businesses.business_name as client_business_id',
-            'promotors.name as promotor_id',
-            'banks.name as account_id',
-            'return_bases.name as return_base_id',
-            'return_request_statuses.name as return_request_status_id'
+            'companies.name as company_name',
+            'client_businesses.business_name as client_business_name',
+            'promotors.name as promotor_name',
+            'banks.name as account_name',
+            'return_bases.name as return_base_name',
+            'return_request_statuses.name as return_request_status_name',
 		)
         ->leftjoin('client_businesses', 'return_requests.client_business_id', '=', 'client_businesses.id')
         ->leftjoin('promotors', 'return_requests.promotor_id', '=', 'promotors.id')
@@ -166,6 +165,7 @@ class ClientReturnRequestDataTable extends DataTable
         ->leftjoin('return_request_statuses', 'return_requests.return_request_status_id', '=', 'return_request_statuses.id')
 
         ->where("client_businesses.client_id", $client->id)
+        ->orderBy("return_requests.id", "desc")
 		->newQuery();
     }
     
@@ -229,14 +229,14 @@ class ClientReturnRequestDataTable extends DataTable
     {
         $columns = [
             Column::make('id')->title('# Sol.'),
-            Column::make('return_request_status_id')->title("Estado")->name("return_request_statuses.name"),
-            Column::make('company_id')->title("Empresa")->name("companies.name"),
-            Column::make('account_id')->title("Cuenta a depositar")->name("banks.name"),
-            // Column::make('promotor_id')->title("Promotor")->name("promotors.name"),
-            Column::make('return_base_id')->title("Base de retorno")->name("return_bases.name"),
-            Column::make('date')->title("Fecha")->name("return_requests.date"),
+            Column::make('return_request_status_name')->title("Estado")->name("return_request_statuses.name"),
+            Column::make('company_name')->title("Empresa")->name("companies.name"),
+            Column::make('account_name')->title("Cuenta a depositar")->name("banks.name"),
+            // Column::make('promotor_name')->title("Promotor")->name("promotors.name"),
+            Column::make('return_base_name')->title("Base de retorno")->name("return_bases.name"),
+            Column::make('date')->title("Fecha solicitado")->name("return_requests.date"),
             Column::make('requires_invoice')->title("Req. Fac")->className("text-center"),
-            Column::make('invoice')->title("Factura")->className("text-end"),
+            Column::make('invoice')->title("Factura")->className("text-center"),
             Column::make('subtotal')->title("Subtotal")->className("text-end"),
             Column::make('iva')->title("IVA")->className("text-end"),
             Column::make('total_invoice')->title("Total de factura")->className("text-end"),
@@ -244,9 +244,9 @@ class ClientReturnRequestDataTable extends DataTable
             Column::make('client_payment_proof')->title("Cpbnte. de pago")->className("text-center"),
 
 
-            Column::make('created_at')->title("Fecha creado"),
-            Column::make('updated_at')->title("Fecha editado"),
-            Column::make('is_active')->title("Activo"),
+            // Column::make('created_at')->title("Fecha creado"),
+            // Column::make('updated_at')->title("Fecha editado"),
+            // Column::make('is_active')->title("Activo"),
         ];
 
         if (auth()->user()->hasPermissions("return_requests.edit") ||

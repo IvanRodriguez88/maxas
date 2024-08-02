@@ -56,6 +56,10 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/dispersion_voucher_files'),
         ],
+        'invoices' => [
+            'driver' => 'local',
+            'root' => storage_path('app/invoices'),
+        ],
         'business_files' => [
             'driver' => 'local',
             'root' => storage_path('app/business_files'),

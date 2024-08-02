@@ -73,6 +73,7 @@ Route::middleware("auth")->group(function () {
     Route::get('return_requests/downloadClientPaymentProof/{return_request}', [ReturnRequestController::class, 'downloadClientPaymentProof'])->name("return_requests.downloadClientPaymentProof");
     Route::get('return_requests/downloadBankPaymentProof/{return_request}', [ReturnRequestController::class, 'downloadBankPaymentProof'])->name("return_requests.downloadBankPaymentProof");
     Route::get('return_requests/downloadDispersionVoucherFile/{return_request_return_type}', [ReturnRequestController::class, 'downloadDispersionVoucherFile'])->name("return_requests.downloadDispersionVoucherFile");
+    Route::get('return_requests/downloadInvoice/{return_request}', [ReturnRequestController::class, 'downloadInvoice'])->name("return_requests.downloadInvoice");
 
 
     Route::post('return_requests/addReturnRequestType/{return_request}', [ReturnRequestController::class, 'addReturnRequestType'])->name("return_requests.addReturnRequestType");
@@ -95,6 +96,7 @@ Route::middleware("auth")->group(function () {
     Route::put('return_requests/updateIngresos/{return_request}', [ReturnRequestController::class, 'updateIngresos'])->name("return_requests.updateIngresos");
     Route::put('return_requests/updateMesaControl/{return_request}', [ReturnRequestController::class, 'updateMesaControl'])->name("return_requests.updateMesaControl");
     Route::put('return_requests/updateEgresos/{return_request}', [ReturnRequestController::class, 'updateEgresos'])->name("return_requests.updateEgresos");
+    Route::put('return_requests/addInvoice/{return_request}', [ReturnRequestController::class, 'addInvoice'])->name("return_requests.addInvoice");
 
     Route::middleware(['permission'])->group(function () {
         Route::resource('users', UserController::class);

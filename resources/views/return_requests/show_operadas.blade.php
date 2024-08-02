@@ -31,6 +31,14 @@
                                     <b>Requiere factura:</b>
                                     @if ($return_request->requires_invoice)
                                         <span class="badge badge-light-success mb-2 me-4">SÍ</span>
+                                        @if($return_request->invoice == null)
+                                            <p class="text-danger">Aún no se carga factura</p>
+                                        @else
+                                            <a id="file" target="_blank" href="{{ route('return_requests.downloadInvoice', $return_request->id) }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                                <u>Ver Factura</u>
+                                            </a>
+                                        @endif
                                     @else
                                         <span class="badge badge-light-danger mb-2 me-4">NO</span>
                                     @endif
@@ -138,12 +146,22 @@
                                 @else
                                     <p>Sin terceros (intermediarios)</p>
                                 @endif
-                               <div class="mt-4">
-                                    <a id="file" target="_blank" href="{{ route('return_requests.downloadClientPaymentProof', $return_request->id) }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                                        <u>Comprobante de pago</u>
-                                    </a>
-                               </div>
+                                <div class="mt-4">
+                                        <a target="_blank" href="{{ route('return_requests.downloadClientPaymentProof', $return_request->id) }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                            <u>Comprobante de pago de cliente</u>
+                                        </a>
+                                </div>
+                                @if ($return_request->bank_payment_proof != null)
+                                    <div class="mt-4">
+                                        <a target="_blank" href="{{ route('return_requests.downloadBankPaymentProof', $return_request->id) }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                            <u>Comprobante de ingreso bancario</u>
+                                        </a>
+                                    </div>
+                                @else
+                                    <p class="mt-4 text-warning">Aún no hay un comprobante de ingreso bancario</p>
+                                @endif
                             </div>
                         </div>
                         <hr>
@@ -207,7 +225,6 @@
 
                     </div>
                     <div class="d-flex justify-content-between gap-2 m-3">
-                        <a id="btnAccept" class="btn btn-success">Pasar a ingresos</a>
                         <a href="{{route('return_requests.index')}}" class="btn btn-dark">Regresar</a>
                     </div>
                 </div>
@@ -218,7 +235,6 @@
 
     <!--  BEGIN CUSTOM SCRIPTS FILE  -->
     <x-slot:footerFiles>
-        @vite(['resources/js/return_requests/return_request_operaciones.js'])
     </x-slot>
     <!--  END CUSTOM SCRIPTS FILE  -->
 </x-base-layout>

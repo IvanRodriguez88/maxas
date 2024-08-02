@@ -98,6 +98,11 @@ class ReturnRequest extends Model
         return $this->returnTypes()->whereNotNull("dispersion_voucher_file")->sum("amount");
     }
 
+    public function getEmptyDispersionVoucherFiles()
+    {
+        return $this->returnTypes()->whereNull("dispersion_voucher_file")->count();
+    }
+
     public function getStatusBadge()
     {
         switch ($this->return_request_status_id) {

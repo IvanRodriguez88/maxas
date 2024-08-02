@@ -14,6 +14,7 @@ use Yajra\DataTables\Services\DataTable;
 
 class ReturnRequestDataTable extends DataTable
 {
+
     /**
      * Build DataTable class.
      *
@@ -37,7 +38,25 @@ class ReturnRequestDataTable extends DataTable
             return '<span class="badge badge-success mb-2 me-4">Sí</span>';
         })
         ->editColumn('date', function($row) {
-            return date("d/m/Y", strtotime($row->date));
+            return date("d/m/Y H:i:s", strtotime($row->date));
+        })
+        ->editColumn('requires_invoice', function($row) {
+            return $row->requires_invoice == 1 ? "Sí" : "No";
+        })
+        ->editColumn('invoice', function($row) {
+            if ($row->requires_invoice == 1) {
+                if ($row->invoice == null) {
+                    return '<span class="badge badge-danger mb-2 me-4">Faltante</span>';
+                }else{
+                    $route = route("return_requests.downloadInvoice", $row->id);
+                    return '
+                        <a href="'.$route.'" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </a>
+                    ';
+                }
+            }
+            return  'N/A' ;
         })
         ->editColumn('total_invoice', function($row) {
             return "$ ".number_format($row->total_invoice, 2, '.', ',');
@@ -75,31 +94,8 @@ class ReturnRequestDataTable extends DataTable
         ->editColumn('return_percentage', function($row) {
             return $row->return_percentage." %";
         })
-        ->editColumn('requires_invoice', function($row) {
-            return $row->requires_invoice == 1 ? "Sí" : "No";
-        })
-        ->editColumn('return_request_status_id', function($row) {
-            switch ($row->return_request_status_id) {
-                case 'Incompleta':
-                    $color = "danger";
-                    break;
-                case 'Ingresos':
-                    $color = "primary";
-                    break;
-                case 'Egresos':
-                    $color = "info";
-                    break;
-                case 'Mesa de control':
-                    $color = "dark";
-                    break;
-                case 'Egresos':
-                    $color = "success";
-                    break;
-                default:
-                    $color = "secondary";
-                    break;
-            }
-            return '<span class="badge badge-'.$color.' mb-2 me-4">'.$row->return_request_status_id.'</span>';
+        ->editColumn('return_request_status_name', function($row) {
+            return ReturnRequest::find($row->id)->getStatusBadge();
         })
         ->editColumn('client_payment_proof', function($row) {
             $route = route("return_requests.downloadClientPaymentProof", $row->id);
@@ -112,7 +108,7 @@ class ReturnRequestDataTable extends DataTable
 
         $datatable->addColumn('action', function($row){
             return $this->getActions($row);
-        })->rawColumns(["action", "is_active", "client_payment_proof", "return_request_status_id"]);
+        })->rawColumns(["action", "is_active", "client_payment_proof", "return_request_status_name", "invoice"]);
 
         $datatable->filter(function($query) {
             if(request('initial_date') !== null){
@@ -143,13 +139,13 @@ class ReturnRequestDataTable extends DataTable
     {
         return $model->select(
 			'return_requests.*',
-            'companies.name as company_id',
-            'client_businesses.business_name as client_business_id',
-            'promotors.name as promotor_id',
-            'banks.name as account_id',
-            'return_bases.name as return_base_id',
-            'return_request_statuses.name as return_request_status_id',
-            'request_types.name as request_type_id'
+            'companies.name as company_name',
+            'client_businesses.business_name as client_business_name',
+            'promotors.name as promotor_name',
+            'banks.name as account_name',
+            'return_bases.name as return_base_name',
+            'return_request_statuses.name as return_request_status_name',
+            'request_types.name as request_type_name'
 		)
         ->leftjoin('client_businesses', 'return_requests.client_business_id', '=', 'client_businesses.id')
         ->leftjoin('promotors', 'return_requests.promotor_id', '=', 'promotors.id')
@@ -159,7 +155,35 @@ class ReturnRequestDataTable extends DataTable
         ->leftjoin('return_bases', 'return_requests.return_base_id', '=', 'return_bases.id')
         ->leftjoin('request_types', 'return_requests.request_type_id', '=', 'request_types.id')
         ->leftjoin('return_request_statuses', 'return_requests.return_request_status_id', '=', 'return_request_statuses.id')
+
+        ->orderBy("return_requests.id", "desc")
+        ->whereIn("return_requests.return_request_status_id", $this->getReturnStatusByRoleId(auth()->user()->role_id))
 		->newQuery();
+    }
+
+    function getReturnStatusByRoleId($role_id){
+        switch ($role_id) {
+            case 1:
+            case 2:
+                $show_statuses = [1,2,3,4,5,6];
+                break;
+            case 5:
+                $show_statuses = [1,2,4,6];
+                break;
+            case 7:
+                $show_statuses = [4];
+                break;
+            case 6:
+                $show_statuses = [3];
+                break;
+            case 8:
+                $show_statuses = [5];
+                break;
+            default:
+                $show_statuses = [];
+                break;
+        }
+        return $show_statuses;
     }
     
 
@@ -220,32 +244,32 @@ class ReturnRequestDataTable extends DataTable
     {
         $columns = [
             Column::make('id')->title('# Sol.'),
-            Column::make('return_request_status_id')->title("Estado")->name("return_request_statuses.name"),
-            Column::make('client_business_id')->title("Cliente")->name("client_businesses.business_name"),
-            Column::make('request_type_id')->title("T. de Solicitud")->name("request_types.name"),
-            Column::make('company_id')->title("Empresa")->name("companies.name"),
-            Column::make('account_id')->title("Cuenta")->name("banks.name"),
-            Column::make('promotor_id')->title("Promotor")->name("promotors.name"),
-            Column::make('date')->title("Fecha")->name("return_requests.date"),
+            Column::make('return_request_status_name')->title("Estado")->name("return_request_statuses.name"),
+            Column::make('requires_invoice')->title("Req. Fac.")->className("text-center"),
+            Column::make('invoice')->title("Factura")->className("text-center"),
+            Column::make('client_business_name')->title("Cliente")->name("client_businesses.business_name"),
+            Column::make('request_type_name')->title("T. de Solicitud")->name("request_types.name"),
+            Column::make('company_name')->title("Empresa")->name("companies.name"),
+            Column::make('account_name')->title("Cuenta")->name("banks.name"),
+            Column::make('promotor_name')->title("Promotor")->name("promotors.name"),
+            Column::make('date')->title("Fecha solicitado")->name("return_requests.date"),
             Column::make('total_invoice')->title("Total de factura")->className("text-end"),
             Column::make('client_payment_proof')->title("Cpbnte. de pago")->className("text-center"),
-            Column::make('requires_invoice')->title("Req. Fac.")->className("text-center"),
-            Column::make('invoice')->title("Factura")->className("text-end"),
             Column::make('total_return')->title("Total a retornar")->className("text-end"),
             Column::make('comission_charged')->title("Comisión cobrada")->className("text-end"),
             Column::make('subtotal')->title("Subtotal")->className("text-end"),
             Column::make('iva')->title("IVA")->className("text-end"),
             Column::make('social_cost')->title("Costo social")->className("text-end"),
             Column::make('comission_promotor')->title("Comisión de promotor")->className("text-end"),
-            Column::make('comission_cab')->title("Comisión CAB")->className("text-end"),
+            Column::make('comission_cab')->title("Comisión int.")->className("text-end"),
             Column::make('comission_play')->title("Comisión Play")->className("text-end"),
             Column::make('play_return')->title("Retorno play")->className("text-end"),
             Column::make('return_percentage')->title("% de retorno")->className("text-center"),
-            Column::make('return_base_id')->title("Base de retorno")->name("return_bases.name"),
+            Column::make('return_base_name')->title("Base de retorno")->name("return_bases.name"),
 
-            Column::make('created_at')->title("Fecha creado"),
-            Column::make('updated_at')->title("Fecha editado"),
-            Column::make('is_active')->title("Activo"),
+            // Column::make('created_at')->title("Fecha creado"),
+            // Column::make('updated_at')->title("Fecha editado"),
+            // Column::make('is_active')->title("Activo"),
         ];
 
         if (auth()->user()->hasPermissions("return_requests.edit") ||

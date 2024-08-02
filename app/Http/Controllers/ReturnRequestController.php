@@ -199,16 +199,19 @@ class ReturnRequestController extends Controller
 
     public function show(ReturnRequest $return_request) 
     {
-        //Obtener badge del status
         $user = auth()->user();
-        $view = "return_requests.show_operadas";
+        $view = "return_requests.show_admin";
 
         switch ($user->role_id) {
             case 2:
                 $view = "return_requests.show_client";
                 break;
             case 5:
-                $view = "return_requests.show_operaciones";
+                if ($return_request->return_request_status_id == 6) { //Si ya fue operada, operaciones ve la vista terminada
+                    $view = "return_requests.show_operadas";
+                }else{
+                    $view = "return_requests.show_operaciones";
+                }
                 break;
             case 6:
                 $view = "return_requests.show_ingresos";
@@ -223,7 +226,6 @@ class ReturnRequestController extends Controller
                 $returnRequestReturnTypeDT = $this->getViewDataTable($returnRequestReturnTypeDataTable, 'return_requests', [], 'return_requests.getReturnRequestReturnTypeDataTable', $params);
                 
                 return view($view, compact("return_request", "returnRequestReturnTypeDT"));
-
                 break;
         }
         return view($view, compact("return_request"));
@@ -409,6 +411,35 @@ class ReturnRequestController extends Controller
         return $this->getResponse($status, $message, $return_request);
     }
 
+    public function addInvoice(Request $request, ReturnRequest $return_request)
+    {
+        $status = false;
+        $file = $request->file("invoice");
+        $message = "No se cargó la factura";
+        if ($file) {
+            $filePath = $file->storeAs(
+                '',
+                'SR'.$return_request->id.'-factura'.".".$file->extension(),
+                'invoices'
+            );
+            $params['invoice'] = $filePath;
+
+            try {
+                $return_request->update($params);
+                $message = "Factura cargada correctamente";
+                $status = true;
+            } catch (\Illuminate\Database\QueryException $e) {
+                $status = false;
+                $message = $this->getErrorMessage($e, 'return_requests');
+            }
+        }else{
+            
+        }
+
+       
+        return $this->getResponse($status, $message, $return_request);
+    }
+
 
     public function getReturnRequestReturnTypeDataTable(ReturnRequest $return_request)
     {
@@ -449,6 +480,18 @@ class ReturnRequestController extends Controller
         $path = $return_request_return_type->dispersion_voucher_file;
         $mimeType = Storage::disk('dispersion_voucher_files')->mimeType($path);
         $fileContent = Storage::disk('dispersion_voucher_files')->get($path);
+
+        // Devolver la respuesta con el contenido del archivo y los encabezados adecuados
+        return response($fileContent, 200)
+                ->header('Content-Type', $mimeType)
+                ->header('Content-Disposition', 'inline; filename="'.basename($path).'"');
+    }
+
+    public function downloadInvoice(ReturnRequest $return_request)
+    {
+        $path = $return_request->invoice;
+        $mimeType = Storage::disk('invoices')->mimeType($path);
+        $fileContent = Storage::disk('invoices')->get($path);
 
         // Devolver la respuesta con el contenido del archivo y los encabezados adecuados
         return response($fileContent, 200)

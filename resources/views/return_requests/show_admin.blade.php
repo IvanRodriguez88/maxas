@@ -17,7 +17,7 @@
     <div class="row layout-top-spacing">
         <input type="hidden" id="return_request_id" value="{{ $return_request->id }}">
         <div class="d-flex justify-content-center">
-            <div class="w-75">
+            <div class="w-100">
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
@@ -36,6 +36,32 @@
                                     @endif
                                 </p>
                             </div>
+                        </div>
+                        <hr>
+                        <div class="card p-3">
+                            <h5>Estado</h5>
+                            <ul>
+                                @if ($return_request->bank_payment_proof == null)
+                                    <li class="text-warning">Falta comprobante de ingreso bancario</li>
+                                @else
+                                    <li class="text-success">Comprobante de ingreso bancario completado</li>
+                                @endif
+
+                                @if ($return_request->getEmptyDispersionVoucherFiles() > 0)
+                                    <li class="text-warning">Faltan: <b>{{$return_request->getEmptyDispersionVoucherFiles()}}</b> comprobantes de dispersión.</li>
+                                @else
+                                    <li class="text-success">Comprobantes de dispersión completos</li>
+                                @endif
+
+                                @if ($return_request->requires_invoice)
+                                    @if($return_request->invoice == null)
+                                        <li class="text-warning">Falta adjuntar la factura para el cliente</li>
+                                    @else
+                                        <li class="text-success">Factura completada</li>
+                                    @endif
+                                @endif
+                            </ul>
+                            
                         </div>
                         <hr>
                         <div class="d-flex gap-3">
@@ -138,12 +164,22 @@
                                 @else
                                     <p>Sin terceros (intermediarios)</p>
                                 @endif
-                               <div class="mt-4">
-                                    <a id="file" target="_blank" href="{{ route('return_requests.downloadClientPaymentProof', $return_request->id) }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                                        <u>Comprobante de pago</u>
-                                    </a>
-                               </div>
+                                <div class="mt-4">
+                                        <a target="_blank" href="{{ route('return_requests.downloadClientPaymentProof', $return_request->id) }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                            <u>Comprobante de pago de cliente</u>
+                                        </a>
+                                </div>
+                                @if ($return_request->bank_payment_proof != null)
+                                    <div class="mt-4">
+                                        <a target="_blank" href="{{ route('return_requests.downloadBankPaymentProof', $return_request->id) }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                            <u>Comprobante de ingreso bancario</u>
+                                        </a>
+                                    </div>
+                                @else
+                                    <p class="mt-4 text-warning">Aún no hay un comprobante de ingreso bancario</p>
+                                @endif
                             </div>
                         </div>
                         <hr>
@@ -180,6 +216,7 @@
                                 <th>CLABE o Cuenta</th>
                                 <th>Monto</th>
                                 <th>Referencia</th>
+                                <th>Cbnte.</th>
                             </thead>
                             <tbody>
                                 @foreach ($return_request->returnTypes as $return_type)
@@ -190,15 +227,23 @@
                                         <td>{{$return_type->account_number}}</td>
                                         <td>${{number_format($return_type->amount, 2, '.', ',')}}</td>
                                         <td>{{$return_type->reference}}</td>
-
+                                        @if ($return_type->dispersion_voucher_file != null)
+                                            <td>
+                                                <a id="file" target="_blank" href="{{route('return_requests.downloadDispersionVoucherFile', $return_type->id)}}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                                </a>
+                                            </td>
+                                        @else
+                                            <td>
+                                                <span class="badge badge-danger mb-2 me-4">Faltante</span>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-
                     </div>
-                    <div class="d-flex justify-content-between gap-2 m-3">
-                        <a id="btnAccept" class="btn btn-success">Pasar a ingresos</a>
+                    <div class="d-flex justify-content-end gap-2 m-3">
                         <a href="{{route('return_requests.index')}}" class="btn btn-dark">Regresar</a>
                     </div>
                 </div>
@@ -209,7 +254,6 @@
 
     <!--  BEGIN CUSTOM SCRIPTS FILE  -->
     <x-slot:footerFiles>
-        @vite(['resources/js/return_requests/return_request_admin.js'])
     </x-slot>
     <!--  END CUSTOM SCRIPTS FILE  -->
 </x-base-layout>
