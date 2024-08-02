@@ -7,8 +7,6 @@ use App\DataTables\CompanyDataTable;
 use App\Http\Requests\CompanyRequest;
 use App\Models\Company;
 use App\Models\Group;
-use App\Models\BankSeparation;
-use App\Models\AccountStatus;
 use App\Models\Intermediary;
 use App\Models\CompanyLevel;
 use App\Models\Account;
@@ -25,12 +23,10 @@ class CompanyController extends Controller
     private function getCommonModels()
     {
         $groups = Group::where("is_active", 1)->pluck("name", "id");
-        $bankSeparations = BankSeparation::where("is_active", 1)->pluck("name", "id");
-        $accountStatuses = AccountStatus::where("is_active", 1)->pluck("name", "id");
         $intermediaries = Intermediary::where("is_active", 1)->pluck("name", "id");
         $companyLevels = CompanyLevel::where("is_active", 1)->pluck("name", "id");
 
-        return compact("groups", "bankSeparations", "accountStatuses", "intermediaries", "companyLevels");
+        return compact("groups", "intermediaries", "companyLevels");
     }
 
     public function create()
@@ -53,7 +49,7 @@ class CompanyController extends Controller
 		try {
             $company = Company::create($params);
             $company->accounts()->attach($params["account_id"]);
-            $message = "Separación de banco creado correctamente";
+            $message = "Empresa creada correctamente";
 		} catch (\Illuminate\Database\QueryException $e) {
             $status = false;
 			$message = $this->getErrorMessage($e, 'companies');
@@ -81,7 +77,7 @@ class CompanyController extends Controller
         try {
             $company->update($params);
             $company->accounts()->sync($params["account_id"]);
-            $message = "Separación de banco modificado correctamente";
+            $message = "Empresa modificada correctamente";
         } catch (\Illuminate\Database\QueryException $e) {
             $status = false;
             $message = $this->getErrorMessage($e, 'companies');
@@ -98,7 +94,7 @@ class CompanyController extends Controller
                 "is_active" => false,
                 "updated_by" => auth()->user()->id
             ]);
-            $message = "Separación de banco desactivado correctamente";
+            $message = "Empresa desactivada correctamente";
         } catch (\Illuminate\Database\QueryException $e) {
             $status = false;
             $message = $this->getErrorMessage($e, 'companies');

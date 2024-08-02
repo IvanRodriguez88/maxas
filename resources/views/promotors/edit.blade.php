@@ -24,7 +24,7 @@
                     @csrf
                     @method("PUT")
                     <div class="d-flex justify-content-center">
-                        <div class="w-50">
+                        <div class="w-75">
                             @include("promotors.fields")
                             <div class="d-flex justify-content-end gap-2">
                                 <a href="{{route('promotors.index')}}" class="btn btn-dark">Cancelar</a>

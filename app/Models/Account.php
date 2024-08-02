@@ -9,11 +9,16 @@ class Account extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['bank_id', 'currency_type_id', 'account_number', 'balance', 'clabe', 'ava', 'swift', 'is_active', 'created_by', 'updated_by'];
+    protected $fillable = ['bank_id', 'currency_type_id', 'bank_separation_id', 'account_number', 'balance', 'clabe', 'ava', 'swift', 'is_active', 'created_by', 'updated_by'];
 
     public function bank()
     {
         return $this->belongsTo("App\Models\Bank", "bank_id");
+    }
+
+    public function bankSeparation()
+    {
+        return $this->belongsTo("App\Models\BankSeparation", "bank_separation_id");
     }
 
     public function currencyType()

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\DataTables\IntermediaryDataTable;
 use App\Http\Requests\IntermediaryRequest;
 use App\Models\Intermediary;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class IntermediaryController extends Controller
 {
@@ -24,9 +26,17 @@ class IntermediaryController extends Controller
     {
         $status = true;
 		$intermediary = null;
-        $params = array_merge($request->all(), [
+
+        //Crear usuario
+        $user = User::create([
             "name" => $request->name,
-            "description" => $request->description,
+            "email" => $request->email,
+            'password' => Hash::make($request->password),
+            'role_id' => 4,
+        ]);
+
+        $params = array_merge($request->all(), [
+            "user_id" => $user->id,
             'is_active' => !is_null($request->is_active),
             'created_by' => auth()->user()->id,
             'updated_by' => auth()->user()->id,
@@ -53,14 +63,16 @@ class IntermediaryController extends Controller
     {
         $status = true;
         $params = array_merge($request->all(), [
-            "name" => $request->name,
-            "description" => $request->description,
             "updated_by" => auth()->user()->id,
             'is_active' => !is_null($request->is_active),
 		]);
 
         try {
             $intermediary->update($params);
+            $intermediary->user->update(["email" => $params["email"]]);
+            if ($request->password) {
+                $intermediary->user->update(["password" => Hash::make($request->password)]);
+            }
             $message = "Intermediario modificado correctamente";
         } catch (\Illuminate\Database\QueryException $e) {
             $status = false;

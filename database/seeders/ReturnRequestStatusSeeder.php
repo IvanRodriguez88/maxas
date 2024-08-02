@@ -16,6 +16,9 @@ class ReturnRequestStatusSeeder extends Seeder
     public function run()
     {
         ReturnRequestStatus::create([
+            "name" => "Incompleta"
+        ]);
+        ReturnRequestStatus::create([
             "name" => "Por operar"
         ]);
         ReturnRequestStatus::create([

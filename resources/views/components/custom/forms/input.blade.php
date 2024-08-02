@@ -1,7 +1,10 @@
-<label for="{{$id ?? $name}}" class="form-label">{{$label ?? $name}}</label>
-@if(isset($required))
-    <span class="text-danger">*</span>
-@endif
+<label for="{{$id ?? $name}}" class="form-label">
+    {{$label ?? $name}}
+    @if(isset($required))
+        <span class="text-danger">*</span>
+    @endif
+</label>
+
 
 @if($type == "autocomplete")
     <input  
@@ -19,6 +22,7 @@
         id="{{$id ?? $name}}"
         value="{{$value ?? ''}}" 
         placeholder="{{$placeholder ?? ''}}"
+        {{$type == "number" ? "step=0.01" : ""}}
         {{isset($disabled) ? "disabled" : ""}}
         {{isset($min) ? "min=".$min : ""}}
         {{isset($max) ? "max=".$max : ""}}

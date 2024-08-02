@@ -40,10 +40,8 @@ class PermissionModuleSeeder extends Seeder
     
         $returnRequests = PermissionModule::create(["name" => "ReturnRequests", "description" => "Solicitudes de retorno", "module_type_id" => 1]);
         PermissionModule::create(["name" => "return_requests", "module_type_id" => 2, "parent_id" => $returnRequests->id]);
-        PermissionModule::create(["name" => "promotor_clients", "module_type_id" => 2, "parent_id" => $returnRequests->id]);
         PermissionModule::create(["name" => "promotors", "module_type_id" => 2, "parent_id" => $returnRequests->id]);
         PermissionModule::create(["name" => "return_bases", "module_type_id" => 2, "parent_id" => $returnRequests->id]);
         PermissionModule::create(["name" => "return_types", "module_type_id" => 2, "parent_id" => $returnRequests->id]);
-        
     }
 }

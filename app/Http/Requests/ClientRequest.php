@@ -27,12 +27,13 @@ class ClientRequest extends FormRequest
     {
         $userId = null;
 		if ($this->isMethod('put')) {
-			$userId = $this->route('client')->id; // Obtener el ID del usuario actualmente en edición
+			$userId = $this->route('client')->user_id; // Obtener el ID del usuario actualmente en edición
 		}
 
         return [
             'name' => 'required|max:255',
             'client_type_id' => 'required',
+            'return_base_id' => 'required',
             'email' => [
                 'required',
                 'string',
@@ -41,6 +42,9 @@ class ClientRequest extends FormRequest
 				Rule::unique('users')->ignore($userId), // Ignorar el correo electrónico del usuario actual
             ],
 			'password' => ($this->isMethod('put') ? 'nullable|' : 'required|') . 'max:255', // Hacer el campo password opcional en edición
+            'comission_ban' => 'required',
+            'comission_flu' => 'required',
+            'comission_nom' => 'required'
         ];
     }
 

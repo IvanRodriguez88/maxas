@@ -19,12 +19,6 @@ return new class extends Migration
             $table->unsignedTinyInteger('group_id')->nullable();
             $table->foreign('group_id')->references('id')->on('groups');
 
-            $table->unsignedTinyInteger('bank_separation_id')->nullable();
-            $table->foreign('bank_separation_id')->references('id')->on('bank_separations');
-
-            $table->unsignedTinyInteger('account_status_id')->nullable();
-            $table->foreign('account_status_id')->references('id')->on('account_statuses');
-
             $table->unsignedTinyInteger('intermediary_id')->nullable();
             $table->foreign('intermediary_id')->references('id')->on('intermediaries');
 
@@ -33,7 +27,6 @@ return new class extends Migration
 
             $table->string('name');    
             $table->string('social_object', 1024);    
-            $table->float('comission');    
 
             $table->timestamps();
 

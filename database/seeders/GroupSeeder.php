@@ -18,5 +18,11 @@ class GroupSeeder extends Seeder
         Group::create([
             "name" => "Grupo 1"
         ]);
+        Group::create([
+            "name" => "Grupo 2"
+        ]);
+        Group::create([
+            "name" => "Grupo 3"
+        ]);
     }
 }

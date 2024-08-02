@@ -11,13 +11,10 @@ class Company extends Model
 
     protected $fillable = [
         'group_id', 
-        'bank_separation_id', 
-        'account_status_id', 
         'intermediary_id', 
         'company_level_id', 
         'name', 
         'social_object', 
-        'comission', 
         'is_active', 
         'created_by', 
         'updated_by'
@@ -26,16 +23,6 @@ class Company extends Model
     public function group()
     {
         return $this->belongsTo("App\Models\Group", "group_id");
-    }
-
-    public function bankSeparation()
-    {
-        return $this->belongsTo("App\Models\BankSeparation", "bank_separation_id");
-    }
-
-    public function accountStatus()
-    {
-        return $this->belongsTo("App\Models\AccountStatus", "account_status_id");
     }
 
     public function intermediary()

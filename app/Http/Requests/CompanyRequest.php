@@ -26,13 +26,9 @@ class CompanyRequest extends FormRequest
     {
         return [
             'group_id' => 'required',
-            'bank_separation_id' => 'required',
-            'account_status_id' => 'required',
-            'intermediary_id' => 'required',
             'company_level_id' => 'required',
             'name' => 'required',
             'social_object' => 'required',
-            'comission' => 'required|min:0|max:100',
         ];
     }
 
@@ -41,13 +37,9 @@ class CompanyRequest extends FormRequest
 	{
 		return [
 			'group_id' => 'Grupo',
-            'bank_separation_id' => 'Separación de banco',
-            'account_status_id' => 'Estado',
-            'intermediary_id' => 'Intermediario',
             'company_level_id' => 'Nivel de empresa',
             'name' => 'Nombre',
             'social_object' => 'Objeto social',
-            'comission' => 'Comisión',
 		];
 	}
 }

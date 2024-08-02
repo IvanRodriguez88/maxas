@@ -37,7 +37,6 @@ class PermissionPermissionSeeder extends Seeder
 		]);
 		$this->createPermissions(["clients"]);
 		$this->createPermissions(["accounts"]);
-		$this->createPermissions(["promotor_clients"], ["store", "destroy"], false);
     }
 
     public function createPermissions($moduleNames = [], $functionNames = [], $addCrudFunctions = true) {

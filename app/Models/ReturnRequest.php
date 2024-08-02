@@ -10,16 +10,17 @@ class ReturnRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'client_id', 'company_id', 'account_id', 'promotor_id', 'return_base_id', 'date',
-        'invoice', 'total_return', 'comission_charged', 'iva', 'social_cost', 'account_destiny_id',
-        'comission_promotor', 'comission_cab', 'comission_play', 'play_return',
-        'cab5T', 'return_percentage', 'return_base_id', 'total_invoice', 'client_payment_proof',
+        'client_business_id', 'company_id', 'account_id', 'promotor_id', 'return_base_id', 'request_type_id', 'date', 'requires_invoice',
+        'invoice', 'total_return', 'comission_charged', 'subtotal', 'iva', 'social_cost', 'account_destiny_id', 'intermediary_id', 'bank_payment_proof',
+        'return_percentage_play', 'return_percentage_promotor', 'return_percentage_intermediary', 'comission_promotor', 'comission_intermediary', 'comission_play', 'play_return',
+        'return_percentage', 'return_base_id', 'total_invoice', 'client_payment_proof', 'return_request_status_id',
+        'payment_method_id', 'payment_way_id', 'cfdi_use_id', 'origin_account',
         'is_active', 'created_by', 'updated_by'
     ];
 
-    public function client()
+    public function clientBusiness()
     {
-        return $this->belongsTo("App\Models\Client", "client_id", "id");
+        return $this->belongsTo("App\Models\clientBusiness", "client_business_id", "id");
     }
 
     public function company()
@@ -42,9 +43,19 @@ class ReturnRequest extends Model
         return $this->belongsTo("App\Models\Promotor", "promotor_id", "id");
     }
 
+    public function intermediary()
+    {
+        return $this->belongsTo("App\Models\Intermediary", "intermediary_id", "id");
+    }
+
     public function returnBase()
     {
         return $this->belongsTo("App\Models\ReturnBase", "return_base_id", "id");
+    }
+
+    public function requestType()
+    {
+        return $this->belongsTo("App\Models\RequestType", "request_type_id", "id");
     }
 
     public function status()
@@ -52,9 +63,71 @@ class ReturnRequest extends Model
         return $this->belongsTo("App\Models\ReturnRequestStatus", "return_request_status_id", "id");
     }
 
+    public function paymentMethod()
+    {
+        return $this->belongsTo("App\Models\PaymentMethod", "payment_method_id", "id");
+    }
+
+    public function paymentWay()
+    {
+        return $this->belongsTo("App\Models\PaymentWay", "payment_way_id", "id");
+    }
+
+    public function cfdiUse()
+    {
+        return $this->belongsTo("App\Models\CfdiUse", "cfdi_use_id", "id");
+    }
+
     public function returnTypes()
     {
         return $this->hasMany('App\Models\ReturnRequestReturnType', 'return_request_id', 'id');
     }
+
+    public function returnConcepts()
+    {
+        return $this->hasMany('App\Models\ReturnRequestConcept', 'return_request_id', 'id');
+    }
+
+    public function getTotalSumReturnTypeAttribute()
+    {
+        return $this->returnTypes()->sum('amount');
+    }
+
+    public function getTotalReturnedAttribute()
+    {
+        return $this->returnTypes()->whereNotNull("dispersion_voucher_file")->sum("amount");
+    }
+
+    public function getEmptyDispersionVoucherFiles()
+    {
+        return $this->returnTypes()->whereNull("dispersion_voucher_file")->count();
+    }
+
+    public function getStatusBadge()
+    {
+        switch ($this->return_request_status_id) {
+            case 1:
+                $color = "danger";
+                break;
+            case 3:
+                $color = "primary";
+                break;
+            case 4:
+                $color = "info";
+                break;
+            case 5:
+                $color = "dark";
+                break;
+            case 6:
+                $color = "success";
+                break;
+            default:
+                $color = "secondary";
+                break;
+        }
+        return '<span class="badge badge-'.$color.' mb-2 me-4">'.$this->status->name.'</span>';
+    }
+
+    protected $appends = ['total_sum_return_type', 'total_returned'];
 
 }

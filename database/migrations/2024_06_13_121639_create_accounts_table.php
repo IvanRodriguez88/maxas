@@ -21,12 +21,15 @@ return new class extends Migration
 
             $table->unsignedTinyInteger('currency_type_id')->nullable();
             $table->foreign('currency_type_id')->references('id')->on('currency_types');
+            
+            $table->unsignedTinyInteger('bank_separation_id')->nullable();
+            $table->foreign('bank_separation_id')->references('id')->on('bank_separations');
 
             $table->string('account_number')->nullable();
             $table->string('clabe')->nullable();
-            $table->string('ava');
-            $table->string('swift');
-            $table->float('balance')->comment("Saldo de la cuenta");
+            $table->string('ava')->nullable();
+            $table->string('swift')->nullable();
+            $table->float('balance')->default(0)->comment("Saldo de la cuenta");
 
             $table->timestamps();
 

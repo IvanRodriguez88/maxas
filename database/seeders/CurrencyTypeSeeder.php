@@ -21,9 +21,15 @@ class CurrencyTypeSeeder extends Seeder
             "description" => "Pesos mexicanos"
         ]);
         CurrencyType::create([
-            "name" => "DLS",
+            "name" => "USD",
             "symbol" => "$",
             "description" => "Dólares americanos"
+        ]);
+
+        CurrencyType::create([
+            "name" => "EURO",
+            "symbol" => "€",
+            "description" => "Euros"
         ]);
         
     }

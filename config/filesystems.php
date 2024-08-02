@@ -48,6 +48,22 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/client_payment_proofs'),
         ],
+        'bank_payment_proofs' => [
+            'driver' => 'local',
+            'root' => storage_path('app/bank_payment_proofs'),
+        ],
+        'dispersion_voucher_files' => [
+            'driver' => 'local',
+            'root' => storage_path('app/dispersion_voucher_files'),
+        ],
+        'invoices' => [
+            'driver' => 'local',
+            'root' => storage_path('app/invoices'),
+        ],
+        'business_files' => [
+            'driver' => 'local',
+            'root' => storage_path('app/business_files'),
+        ],
 
         's3' => [
             'driver' => 's3',

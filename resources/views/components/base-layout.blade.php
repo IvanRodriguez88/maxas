@@ -1,16 +1,16 @@
-{{-- 
+{{--
 
 /**
 *
 * Created a new component <x-base-layout/>.
-* 
+*
 */
 
 --}}
 
 @php
     $isBoxed = layoutConfig()['boxed'];
-    $isAltMenu = layoutConfig()['alt-menu']; 
+    $isAltMenu = layoutConfig()['alt-menu'];
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -25,24 +25,20 @@
     <link rel="icon" type="image/x-icon" href="{{Vite::asset('resources/images/favicon.ico')}}"/>
 
     @vite(['resources/scss/layouts/modern-light-menu/light/loader.scss'])
-
     @vite(['resources/layouts/modern-light-menu/loader.js'])
-    
+
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{asset('plugins/bootstrap/bootstrap.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/sweetalerts2/sweetalerts2.css')}}">
     @vite(['resources/scss/light/plugins/sweetalerts2/custom-sweetalert.scss'])
-    @vite(['resources/scss/dark/plugins/sweetalerts2/custom-sweetalert.scss'])
     <link rel="stylesheet" href="{{asset('plugins/notification/snackbar/snackbar.min.css')}}">
     @vite(['resources/scss/light/plugins/notification/snackbar/custom-snackbar.scss'])
     @vite(['resources/scss/light/assets/elements/alert.scss'])
-    @vite(['resources/scss/dark/assets/elements/alert.scss'])
-        
-    @vite(['resources/scss/light/assets/main.scss', 'resources/scss/dark/assets/main.scss'])
+
+    @vite(['resources/scss/light/assets/main.scss'])
     <link rel="stylesheet" href="{{asset('plugins/autocomplete/css/autoComplete.02.css')}}">
     @vite(['resources/scss/light/plugins/autocomplete/css/custom-autoComplete.scss'])
-    @vite(['resources/scss/dark/plugins/autocomplete/css/custom-autoComplete.scss'])
 
     @if (
             !Request::routeIs('404') &&
@@ -56,18 +52,17 @@
             // Real Logins
             !Request::routeIs('login')
         )
-        @if ($scrollspy == 1) @vite(['resources/scss/light/assets/scrollspyNav.scss', 'resources/scss/dark/assets/scrollspyNav.scss']) @endif
+        @if ($scrollspy == 1) @vite(['resources/scss/light/assets/scrollspyNav.scss']) @endif
         <link rel="stylesheet" type="text/css" href="{{asset('plugins/waves/waves.min.css')}}">
         <link rel="stylesheet" type="text/css" href="{{asset('plugins/highlight/styles/monokai-sublime.css')}}">
         @vite([ 'resources/scss/light/plugins/perfect-scrollbar/perfect-scrollbar.scss'])
 
         @vite([
             'resources/scss/layouts/modern-light-menu/light/structure.scss',
-            'resources/scss/layouts/modern-light-menu/dark/structure.scss',
         ])
-        
+
     @endif
-    
+
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     {{$headerFiles}}
     <!-- END GLOBAL MANDATORY STYLES -->
@@ -89,10 +84,11 @@
     <script src="{{asset('plugins/table/datatable/button-ext/buttons.html5.min.js')}}"></script>
     <script src="{{asset('plugins/table/datatable/button-ext/buttons.print.min.js')}}"></script>
     <script src="{{asset('plugins/table/datatable/dt-custom-setting.js')}}"></script>
+
     <script src="{{asset('plugins/sweetalerts2/sweetalerts2.min.js')}}"></script>
     <script src="{{asset('plugins/input-mask/jquery.inputmask.bundle.min.js')}}"></script>
     {{--
-        
+
     /*
     *
     *   Check if the routes are not single pages ( which does not contains sidebar or topbar  ) such as :-
@@ -126,8 +122,8 @@
                 <div class="main-container " id="container">
                     <x-layout-overlay/>
                     <x-menu.vertical-menu/>
-                    
-                    
+
+
                     <!--  BEGIN CONTENT AREA  -->
                     <div id="content" class="main-content {{(Request::routeIs('blank') ? 'ms-0 mt-0' : '')}}">
                         @if ($scrollspy == 1)
@@ -135,7 +131,7 @@
                                 <div class="container">
                                     {{ $slot }}
                                 </div>
-                            </div>                
+                            </div>
                         @else
                             <div class="layout-px-spacing">
                                 <div class="middle-content {{($isBoxed ? 'container-xxl' : '')}} p-0">
@@ -147,7 +143,7 @@
                         <!--  BEGIN FOOTER  -->
                         <x-layout-footer/>
                         <!--  END FOOTER  -->
-                        
+
                     </div>
                     <!--  END CONTENT AREA  -->
 
@@ -193,7 +189,7 @@
 
             @if ($scrollspy == 1) @vite(['resources/assets/js/scrollspyNav.js']) @endif
 
-        
+
             @vite(['resources/layouts/modern-light-menu/app.js'])
             <!-- END GLOBAL MANDATORY STYLES -->
 

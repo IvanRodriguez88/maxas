@@ -8,6 +8,8 @@ use App\Http\Requests\AccountRequest;
 use App\Models\Account;
 use App\Models\Bank;
 use App\Models\CurrencyType;
+use App\Models\BankSeparation;
+
 use Illuminate\Support\Facades\DB;
 
 class AccountController extends Controller
@@ -18,12 +20,17 @@ class AccountController extends Controller
         return $dataTable->render('accounts.index', compact("allowAdd"));
     }
 
-    public function create()
+    private function getCommonModels()
     {
+        $bankSeparations = BankSeparation::where("is_active", 1)->pluck("name", "id");
         $banks = Bank::where("is_active", 1)->pluck("name", "id");
         $currency_types = CurrencyType::where("is_active", 1)->pluck("name", "id");
+        return compact("banks", "bankSeparations", "currency_types",);
+    }
 
-        return view('accounts.create', compact("banks", "currency_types"));
+    public function create()
+    {
+        return view('accounts.create', $this->getCommonModels());
     }
 
     public function store(AccountRequest $request)
@@ -55,10 +62,7 @@ class AccountController extends Controller
 
     public function edit(Account $account)
     {
-        $banks = Bank::where("is_active", 1)->pluck("name", "id");
-        $currency_types = CurrencyType::where("is_active", 1)->pluck("name", "id");
-
-        return view('accounts.edit', compact("account", "banks", "currency_types"));
+        return view('accounts.edit', array_merge($this->getCommonModels(), compact("account")));
     }
 
     public function update(AccountRequest $request, Account $account)

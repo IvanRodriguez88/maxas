@@ -9,6 +9,11 @@ class Intermediary extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'is_active', 'created_by', 'updated_by'];
+    protected $fillable = ['name', 'comission_percentage', 'user_id', 'is_active', 'created_by', 'updated_by'];
+
+    public function user()
+    {
+        return $this->belongsTo("App\Models\User", "user_id");
+    }
 
 }

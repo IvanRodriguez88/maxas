@@ -9,7 +9,6 @@
     <x-slot:headerFiles>
         <!--  BEGIN CUSTOM STYLE FILE  -->
         @vite(['resources/scss/light/assets/components/accordions.scss'])
-        @vite(['resources/scss/dark/assets/components/accordions.scss'])
         <!--  END CUSTOM STYLE FILE  -->
     </x-slot>
     <x-slot:scrollspyConfig>

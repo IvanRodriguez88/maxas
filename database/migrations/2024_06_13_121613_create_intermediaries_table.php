@@ -19,6 +19,13 @@ return new class extends Migration
             $table->string('name');
             $table->string('description')->nullable();
 
+            //Caballero tiene el 0.5%
+            $table->float('comission_percentage')->default(0)->comment("porcentaje que se lleva el tercero (le quita a lo de play)");
+
+            //Usuario ligado a este intermediario
+            $table->unsignedSmallInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
+
             $table->timestamps();
 
             $table->string('notes', 1024)->nullable()->comment('Notas');    

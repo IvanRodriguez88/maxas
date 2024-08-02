@@ -8,6 +8,8 @@ use App\DataTables\PromotorClientDataTable;
 
 use App\Http\Requests\PromotorRequest;
 use App\Models\Promotor;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class PromotorController extends Controller
 {
@@ -26,7 +28,18 @@ class PromotorController extends Controller
     {
         $status = true;
 		$promotor = null;
+
+        //Crear usuario
+        $user = User::create([
+            "name" => $request->name,
+            "email" => $request->email,
+            'password' => Hash::make($request->password),
+            'role_id' => 3,
+        ]);
+
+
         $params = array_merge($request->all(), [
+            "user_id" => $user->id,
             'is_active' => !is_null($request->is_active),
             'created_by' => auth()->user()->id,
             'updated_by' => auth()->user()->id,
@@ -62,8 +75,13 @@ class PromotorController extends Controller
             "updated_by" => auth()->user()->id,
             'is_active' => !is_null($request->is_active),
 		]);
+        unset($params["password"]);
         try {
             $promotor->update($params);
+            $promotor->user->update(["email" => $params["email"]]);
+            if ($request->password) {
+                $promotor->user->update(["password" => Hash::make($request->password)]);
+            }
             $message = "Promotor modificado correctamente";
         } catch (\Illuminate\Database\QueryException $e) {
             $status = false;
