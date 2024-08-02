@@ -26,7 +26,7 @@ class Account extends Model
         return $this->belongsTo("App\Models\CurrencyType", "currency_type_id");
     }
 
-    public function accounts(){
+    public function company(){
         return $this->belongsToMany('App\Models\Company', 'accounts_companies', 'account_id', 'company_id');
     }
 

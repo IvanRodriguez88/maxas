@@ -34,16 +34,49 @@
                             </div>
                             <hr>
                             <div class="d-flex justify-content-between align-items-center gap-3">
-                                <div class="card p-2">
-                                    <input type="hidden" id="total_rest" value="{{$return_request->total_return - $return_request->getTotalReturnedAttribute()}}">
-                                    <p>TOTAL A RETORNAR: <b class="text-success">${{ number_format($return_request->total_return, 2, '.', ',') }}</b></p>
-                                    <p>TOTAL RETORNADO: <b id="total_returned_text" class="text-dark">${{ number_format($return_request->getTotalReturnedAttribute(), 2, '.', ',') }}</b></p>
-                                    <p class="mb-0">TOTAL RESTANTE: 
-                                        <b id="total_rest_text" class="text-secondary">
-                                            ${{ number_format($return_request->total_return - $return_request->getTotalReturnedAttribute(), 2, '.', ',') }}
-                                        </b>
-                                    </p>
-                                </div>
+                                <div>
+									<div class="card p-2">
+										<input type="hidden" id="total_rest" value="{{$return_request->total_return - $return_request->getTotalReturnedAttribute()}}">
+										<p>TOTAL A RETORNAR: <b class="text-success">${{ number_format($return_request->total_return, 2, '.', ',') }}</b></p>
+										<p>TOTAL RETORNADO: <b id="total_returned_text" class="text-dark">${{ number_format($return_request->getTotalReturnedAttribute(), 2, '.', ',') }}</b></p>
+										<p class="mb-0">TOTAL RESTANTE: 
+											<b id="total_rest_text" class="text-secondary">
+												${{ number_format($return_request->total_return - $return_request->getTotalReturnedAttribute(), 2, '.', ',') }}
+											</b>
+										</p>
+									</div>
+									<div class="mt-3">
+										<div class="d-flex input-container">
+											<span class="input-group-text">
+												Cuenta donde saldrá el dinero
+												<b class="text-danger">*</b>
+											</span>
+											<div class="w-100">
+												<select class="form-control" id="account_id" name="account_id" required>
+													<option disabled selected value="0">Seleccione una opción...</option>
+													@foreach ($accounts as $account)
+														@php $text = $account->bank->name; @endphp
+						
+														@if ($account->clabe !== null)
+															@php $text .= " - ".$account->clabe; @endphp
+														@endif
+						
+														@if ($account->account_number !== null)
+															@php 
+																$text = $account->bank->name;
+																$text .= " - ".$account->account_number;
+															@endphp
+														@endif
+														<option value="{{$account->id}}">{{$text}}</option>
+													@endforeach
+												</select>
+											</div>
+										</div>
+										<div id="account_info" class="card p-3">
+
+										</div>
+									</div>
+								</div>
                                 <div>
                                     <div class="btn-group-vertical" role="group" aria-label="Vertical radio toggle button group">
                                         <input checked type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio2" autocomplete="off">

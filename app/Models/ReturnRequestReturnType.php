@@ -10,7 +10,7 @@ class ReturnRequestReturnType extends Model
     use HasFactory;
 
     protected $fillable = ['return_request_id','beneficiary_name', 'bank_id',
-        'return_type_id', 'account_number', 'amount', 'reference', 'dispersion_voucher_file',
+        'return_type_id', 'account_number', 'amount', 'reference', 'dispersion_voucher_file', 'account_id',
         'is_active', 'created_by', 'updated_by'];
 
     public function bank()
@@ -21,5 +21,10 @@ class ReturnRequestReturnType extends Model
     public function returnType()
     {
         return $this->belongsTo("App\Models\ReturnType", "return_type_id", "id");
+    }
+
+	public function account()
+    {
+        return $this->belongsTo("App\Models\Account", "account_id", "id");
     }
 }

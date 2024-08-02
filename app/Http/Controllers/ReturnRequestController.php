@@ -27,6 +27,7 @@ use App\Models\UnitType;
 use App\Models\ReturnRequestConcept;
 use App\Models\RequestType;
 use App\Models\ClientBusiness;
+use App\Models\Account;
 
 
 
@@ -121,7 +122,7 @@ class ReturnRequestController extends Controller
             $status = false;
 			$message = $this->getErrorMessage($e, 'return_requests');
 		}
-        return $this->getResponse($status, $message, $return_request);
+        return $this->getResponse($status, $message, $return_request, redirect()->route("return_requests.edit", $return_request->id));
     }
 
    
@@ -201,7 +202,6 @@ class ReturnRequestController extends Controller
     {
         $user = auth()->user();
         $view = "return_requests.show_admin";
-
         switch ($user->role_id) {
             case 2:
                 $view = "return_requests.show_client";
@@ -224,8 +224,11 @@ class ReturnRequestController extends Controller
                 $returnRequestReturnTypeDataTable = new ReturnRequestReturnTypeDataTable($return_request->id);
                 $params = ['return_request' => $return_request->id];
                 $returnRequestReturnTypeDT = $this->getViewDataTable($returnRequestReturnTypeDataTable, 'return_requests', [], 'return_requests.getReturnRequestReturnTypeDataTable', $params);
-                
-                return view($view, compact("return_request", "returnRequestReturnTypeDT"));
+				$companies = Company::where('company_level_id', 3)->get();
+				$accounts = $companies->flatMap(function($company) {
+					return $company->accounts;
+				});
+                return view($view, compact("return_request", "returnRequestReturnTypeDT", "accounts"));
                 break;
         }
         return view($view, compact("return_request"));
@@ -387,25 +390,38 @@ class ReturnRequestController extends Controller
     {
         $status = false;
         $file = $request->file("dispersion_voucher_file");
+		$account_id = $request->account_id;
         $message = "No se cargó el comprobante";
-        $return_request = ReturnRequest::find($return_request_return_type->return_request_id);
-        if ($file) {
-            $filePath = $file->storeAs(
-                '',
-                'SR'.$return_request_return_type->id.'-comprobante_dispersion'.".".$file->extension(),
-                'dispersion_voucher_files'
-            );
-            $params['dispersion_voucher_file'] = $filePath;
+		$return_request = ReturnRequest::find($return_request_return_type->return_request_id);
 
-            try {
-                $return_request_return_type->update($params);
-                $message = "Comprobante cargado correctamente";
-                $status = true;
-            } catch (\Illuminate\Database\QueryException $e) {
-                $status = false;
-                $message = $this->getErrorMessage($e, 'return_requests');
-            }
-        }
+		
+		if ($account_id != "null") {
+			$account = Account::find($account_id);
+			if ($account->balance - $return_request_return_type->amount > 0) {
+				if ($file) {
+					$filePath = $file->storeAs(
+						'',
+						'SR'.$return_request->id.'-comprobante_dispersion'.$return_request_return_type->id.".".$file->extension(),
+						'dispersion_voucher_files'
+					);
+					$params['dispersion_voucher_file'] = $filePath;
+					$params['account_id'] = $account->id;
+					try {
+						$return_request_return_type->update($params);
+						$account->update(["balance" => $account->balance - $return_request_return_type->amount]);
+						$message = "Dispersión y comprobante cargado correctamente";
+						$status = true;
+					} catch (\Illuminate\Database\QueryException $e) {
+						$status = false;
+						$message = $this->getErrorMessage($e, 'return_requests');
+					}
+				}
+			}else{
+				$message = "No se puede dispersar, faltan $". number_format(abs($account->balance - $return_request_return_type->amount), 2, '.', ',');
+			}
+		}else{
+			$message = "No se seleccionó una cuenta";
+		}
 
        
         return $this->getResponse($status, $message, $return_request);
@@ -526,6 +542,8 @@ class ReturnRequestController extends Controller
 
             $status = true;
             $return_request->update($params);
+			$return_request->account->update(["balance" => $return_request->account->balance + $return_request->total_invoice]);
+			
         }
 
         return $this->getResponse($status, '', $return_request);

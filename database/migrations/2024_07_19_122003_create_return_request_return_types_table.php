@@ -33,6 +33,9 @@ return new class extends Migration
 
             $table->string("dispersion_voucher_file")->nullable()->comment("Comprobante de dispersión");
 
+			$table->unsignedBigInteger('account_id')->nullable();
+            $table->foreign('account_id')->references('id')->on('accounts')->comment("Cuenta desde donde se dispersó");
+
             $table->timestamps();
             $table->string('notes', 1024)->nullable()->comment('Notas');    
             $table->boolean('is_active')->default(1)->comment('Muestra si la fila está activa');

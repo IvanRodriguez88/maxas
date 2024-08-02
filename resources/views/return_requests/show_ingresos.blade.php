@@ -58,10 +58,10 @@
                                 <input required type="file" name="bank_payment_proof" id="bank_payment_proof" class="form-control mx-2" accept=".pdf">
                             </div>
                         </div>
-                    </div>
-                    <div class="d-flex justify-content-between gap-2 m-3">
-                        <button type="submit" class="btn btn-success">Pasar a mesa de control</button>
-                        <a href="{{route('return_requests.index')}}" class="btn btn-dark">Regresar</a>
+						<div class="d-flex justify-content-between gap-2 m-3">
+							<button type="submit" class="btn btn-success">Pasar a mesa de control</button>
+							<a href="{{route('return_requests.index')}}" class="btn btn-dark">Regresar</a>
+						</div>
                     </div>
                 </form>
             </div>

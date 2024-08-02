@@ -97,7 +97,7 @@ class ClientReturnRequestDataTable extends DataTable
                 }
             }
         })
-        ->editColumn('return_request_status_id', function($row) {
+        ->editColumn('return_request_status_name', function($row) {
             return ReturnRequest::find($row->id)->getStatusBadge();
         })
         ->editColumn('client_payment_proof', function($row) {
@@ -116,7 +116,7 @@ class ClientReturnRequestDataTable extends DataTable
 
         $datatable->addColumn('action', function($row){
             return $this->getActions($row);
-        })->rawColumns(["action", "is_active", "client_payment_proof", "return_request_status_id", "invoice"]);
+        })->rawColumns(["action", "is_active", "client_payment_proof", "return_request_status_name", "invoice"]);
 
         $datatable->filter(function($query) {
             if(request('initial_date') !== null){
@@ -200,7 +200,7 @@ class ClientReturnRequestDataTable extends DataTable
 
     public function getActions($row){
         $result = null;
-        if ($row->return_request_status_id == "Incompleta") {
+        if ($row->return_request_status_name == "Incompleta") {
             if (auth()->user()->hasPermissions("return_requests.edit")) {
                 $result .= '
                     <a title="Editar" href='.route("return_requests.edit", $row->id).' class="btn btn-outline-secondary btn-icon ps-2 px-1">

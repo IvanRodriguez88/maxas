@@ -130,4 +130,9 @@ class AccountController extends Controller
         return response()->json($formattedAccounts);    
     }
 
+	public function getAccount(Account $account)
+	{
+		return view("accounts.info", compact("account"))->render();    
+	}
+
 }

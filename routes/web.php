@@ -48,6 +48,8 @@ Route::middleware("auth")->group(function () {
     Route::get('companies/getById/{company}', [CompanyController::class, "getById"])->name("accounts.getById");
     
     Route::get('accounts/getDataAutocomplete', [AccountController::class, "getDataAutocomplete"])->name("accounts.getDataAutocomplete");
+	Route::get('accounts/getAccount/{account}', [AccountController::class, "getAccount"])->name("accounts.getAccount");
+
     Route::get('clients/getDataAutocomplete', [ClientController::class, "getDataAutocomplete"])->name("clients.getDataAutocomplete");
     
     //Rutas para agregar razones sociales (constancias de situacion fiscal) a un cliente
