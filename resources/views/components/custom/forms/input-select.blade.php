@@ -4,7 +4,7 @@
         <span class="text-danger">*</span>
     @endif
 </div>
-<select class="form-control {{$class ?? ''}}" id="{{$id ?? $name}}" name="{{$name}}" {{isset($required) ? "required" : ""}}>
+<select {{isset($disabled) ? "disabled" : ""}} class="form-control {{$class ?? ''}}" id="{{$id ?? $name}}" name="{{$name}}" {{isset($required) ? "required" : ""}}>
     <option {{isset($disabled) ? "" : "disabled"}} selected value="">Seleccione una opción...</option>
     @foreach ($elements as $key => $element)
         <option {{$key == $value ? "selected" : ""}} value="{{$key}}">{{$element}}</option>

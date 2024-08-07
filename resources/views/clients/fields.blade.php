@@ -128,7 +128,7 @@
                 </td>
                 <td>{{ $company->group->name }}</td>
                 <td>{{ $company->name }}</td>
-                <td>{{ $company->intermediary->name }}</td>
+                <td>{{ $company->intermediary->name ?? "N/A" }}</td>
                 <td>{{ $company->companyLevel->name }}</td>
             </tr>
         @endforeach

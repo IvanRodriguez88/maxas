@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import glob from 'fast-glob';
 
 export default defineConfig({
     plugins: [
@@ -34,9 +33,7 @@ export default defineConfig({
                 'resources/js/autocomplete.js',
                 'resources/js/deleteRow.js',
 
-                'resources/js/return_requests/return_requests.js',
                 'resources/js/return_requests/return_request_clients.js',
-                'resources/js/return_requests/return_request_admin.js',
                 'resources/js/return_requests/return_request_operaciones.js',
                 'resources/js/return_requests/return_request_ingresos.js',
                 'resources/js/return_requests/return_request_mesa_control.js',

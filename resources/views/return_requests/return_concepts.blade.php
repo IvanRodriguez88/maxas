@@ -19,6 +19,7 @@
                 <div class="p-3">
                     <label for="client_payment_proof">Comprobante de pago</label>
                     <input type="file" class="form-control" id="client_payment_proof" name="client_payment_proof" accept=".pdf">
+                    <p class="mt-1 text-secondary">El comprobante se puede subir luego de recibir su factura*</p>
                 </div>
             </div>
             <div class="col-md-6">

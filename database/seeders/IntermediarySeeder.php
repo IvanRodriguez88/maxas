@@ -15,10 +15,10 @@ class IntermediarySeeder extends Seeder
      */
     public function run()
     {
-        Intermediary::create([
-            "user_id" => 3,
-            "name" => "Caballero",
-            "comission_percentage" => 0.5
-        ]);
+        // Intermediary::create([
+        //     "user_id" => 3,
+        //     "name" => "Caballero",
+        //     "comission_percentage" => 0.5
+        // ]);
     }
 }

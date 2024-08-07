@@ -29,21 +29,46 @@
 
 <div class="row mb-2">
     <div class="col-sm-3">
-        @include("components.custom.forms.input-select", [
-            "id" => "bank_id",
-            "name" => "bank_id",
-            "elements" => $banks,
-            "placeholder" => "Banco...",
-            "value" => isset($return_request_return_type) ? $return_request_return_type->bank_id :  old("bank_id"),
-            "label" => "Banco",
-            "required" => true,
-        ])
+        @if (isset($return_request_return_type))
+            @if ($return_request_return_type->return_type_id == 1)
+                @include("components.custom.forms.input-select", [
+                    "id" => "bank_id",
+                    "name" => "bank_id",
+                    "elements" => $banks,
+                    "placeholder" => "Banco...",
+                    "value" => isset($return_request_return_type) ? $return_request_return_type->bank_id :  old("bank_id"),
+                    "label" => "Banco",
+                    "disabled" => true,
+                ])
+            @else
+                @include("components.custom.forms.input-select", [
+                    "id" => "bank_id",
+                    "name" => "bank_id",
+                    "elements" => $banks,
+                    "placeholder" => "Banco...",
+                    "value" => isset($return_request_return_type) ? $return_request_return_type->bank_id :  old("bank_id"),
+                    "label" => "Banco",
+                    "required" => true,
+                ])
+            @endif
+        @else
+            @include("components.custom.forms.input-select", [
+                "id" => "bank_id",
+                "name" => "bank_id",
+                "elements" => $banks,
+                "placeholder" => "Banco...",
+                "value" => isset($return_request_return_type) ? $return_request_return_type->bank_id :  old("bank_id"),
+                "label" => "Banco",
+                "required" => true,
+            ])
+        @endif
+        
     </div>
     <div class="col-sm-6">
         @include("components.custom.forms.input", [
             "id" => "account_number",
             "name" => "account_number",
-            "type" => "number",
+            "type" => "text",
             "placeholder" => "Cuenta o clabe...",
             "value" => isset($return_request_return_type) ? $return_request_return_type->account_number :  old("account_number"),
             "label" => "Cuenta o clabe",
@@ -87,3 +112,17 @@
         ])
     </div>
 </div>
+
+<script>
+    $("#return_type_id").on("change", function() {
+        if ($(this).val() == 1) {
+            $("#bank_id").val("")
+            $("#bank_id").attr("disabled", true)
+            $("#bank_id").attr("required", false)
+        }else {
+            $("#bank_id").val("")
+            $("#bank_id").attr("disabled", false)
+            $("#bank_id").attr("required", true)
+        }
+    })
+</script>

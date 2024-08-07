@@ -20,7 +20,7 @@ class ReturnRequest extends Model
 
     public function clientBusiness()
     {
-        return $this->belongsTo("App\Models\clientBusiness", "client_business_id", "id");
+        return $this->belongsTo("App\Models\ClientBusiness", "client_business_id", "id");
     }
 
     public function company()

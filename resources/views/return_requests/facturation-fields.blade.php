@@ -74,7 +74,7 @@
                     <select class="form-control" id="account_id" name="account_id" required>
                         <option disabled selected value="">Seleccione una opción...</option>
                         @if (isset($return_request))
-                            @foreach ($return_request->company->accounts as $account)
+                            @foreach ($return_request->company->accounts->where("is_active", 1) as $account)
                                 @php $text = $account->bank->name; @endphp
 
                                 @if ($account->clabe !== null)

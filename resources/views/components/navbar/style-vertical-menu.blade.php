@@ -10,7 +10,8 @@
 
     <div class="header-container {{ $classes }}">
         <header class="header navbar navbar-expand-sm expand-header d-flex justify-content-between">
-        <nav aria-label="breadcrumb">
+            <span>{{auth()->user()->name}}</span>
+        <!-- <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 @foreach (breadcrumbs() as $breadcrumb)
                     <li class="breadcrumb-item">
@@ -18,7 +19,7 @@
                     </li>
                 @endforeach
             </ol>
-        </nav>
+        </nav> -->
 
             <ul class="navbar-item flex-row ms-lg-auto ms-0">
 

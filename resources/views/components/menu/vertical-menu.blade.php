@@ -21,7 +21,7 @@
                             </a>
                         </div>
                         <div class="nav-item theme-text">
-                            <a href="{{getRouterValue();}}/dashboard" class="nav-link"> BLANK </a>
+                            <a href="{{getRouterValue();}}/dashboard" class="nav-link"> GCE </a>
                         </div>
                     </div>
                     <div class="nav-item sidebar-toggle">

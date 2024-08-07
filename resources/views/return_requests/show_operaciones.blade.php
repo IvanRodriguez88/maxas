@@ -31,20 +31,33 @@
                                     <b>Requiere factura:</b>
                                     @if ($return_request->requires_invoice)
                                         <span class="badge badge-light-success mb-2 me-4">SÍ</span>
-                                        @if($return_request->invoice == null)
-                                            <p class="text-danger">Aún no se carga factura</p>
-                                        @else
-                                            <a id="file" target="_blank" href="{{ route('return_requests.downloadInvoice', $return_request->id) }}">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                                                <u>Ver Factura</u>
-                                            </a>
-                                        @endif
                                     @else
                                         <span class="badge badge-light-danger mb-2 me-4">NO</span>
                                     @endif
                                 </p>
                             </div>
                         </div>
+                        <hr>
+                        @if ($return_request->requires_invoice)
+                            @if($return_request->invoice == null)
+                                <div class="mt-3 w-50">
+                                    <label for="invoice">Adjuntar factura</label>
+                                    <form id="return_request_operaciones-form" class="row g-3 needs-validation" novalidate method="POST" action="{{ route('return_requests.addClientPaymentProof', $return_request->id) }}" enctype="multipart/form-data">
+                                        @csrf
+                                        @method("PUT")    
+                                        <div class="input-group">
+                                            <input type="file" class="form-control" id="invoice" name="invoice" accept=".pdf">
+                                            <button class="btn btn-success" type="button" id="addInvoiceBtn">Subir</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            @else
+                                <a id="file" target="_blank" href="{{ route('return_requests.downloadInvoice', $return_request->id) }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                    <u>Ver Factura</u>
+                                </a>
+                            @endif
+                        @endif
                         <hr>
                         <div class="d-flex gap-3">
                             <div>
@@ -146,12 +159,16 @@
                                 @else
                                     <p>Sin terceros (intermediarios)</p>
                                 @endif
-                               <div class="mt-4">
-                                    <a id="file" target="_blank" href="{{ route('return_requests.downloadClientPaymentProof', $return_request->id) }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                                        <u>Comprobante de pago</u>
-                                    </a>
-                               </div>
+                                @if ($return_request->client_payment_proof !== null)
+                                    <div class="mt-4">
+                                        <a id="file" target="_blank" href="{{ route('return_requests.downloadClientPaymentProof', $return_request->id) }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                            <u>Comprobante de pago</u>
+                                        </a>
+                                    </div>
+                                @else
+                                    <p class="text-danger">Aún no se carga comprobante de pago</p>
+                                @endif
                             </div>
                         </div>
                         <hr>

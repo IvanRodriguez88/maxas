@@ -48,6 +48,8 @@ $(document).ready(function(){
         });
     }
 
+    
+
     $("#returnTypeModal").on("submit", function(e) {
         e.preventDefault();
         const return_request_id = $("#return_request_id").val()
@@ -247,6 +249,39 @@ $(document).ready(function(){
             }
         });
 
+    })
+
+    $("#addClientPaymentProofBtn").on("click", function() {
+        const formData = new FormData($("#return_request_client-form")[0]);
+        const return_request_id = $("#return_request_id").val()
+        const confirm = alertYesNo(
+            'Subir comprobante de pago',
+            '¿Estás seguro de subir la comprobante de pago de la solicitud?',
+            'question',
+            'Aceptar', 'Cancelar', '#5497d6' ,'#d33333'
+        );
+        confirm.then((result) => {
+            if (result) {
+                $.ajax({
+                    url: $('meta[name="app-url"]').attr('content')+`/return_requests/addClientPaymentProof/${return_request_id}`,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    success: function(response) {
+                        if (response.status) {
+                            snackBar(response.message, "success")
+                            location.reload()
+                        }else{
+                            snackBar(response.message, "danger")
+                        }
+                    }
+                });
+            }
+        })
     })
 
 

@@ -16,6 +16,7 @@
 
     <div class="row layout-top-spacing">
         <div class="d-flex justify-content-center">
+            <input type="hidden" id="return_request_id" value="{{ $return_request->id }}">
             <div class="w-100">
                 <div class="card">
                     <div class="card-body">
@@ -84,11 +85,22 @@
                                 <p><b>Banco:</b> {{$return_request->account->bank->name}}</p>
                                 <p><b>CLABE:</b> {{$return_request->account->clabe ?? "N/A"}}</p>
                                 <p><b>Número de cuenta:</b> {{$return_request->account->account_number ?? "N/A"}}</p>
+                                <hr>
                                 <div class="mt-3 mb-3">
-                                    <a id="file" target="_blank" href="{{ route('return_requests.downloadClientPaymentProof', $return_request->id) }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                                        <u>Comprobante de pago</u>
-                                    </a>
+                                    @if ($return_request->client_payment_proof !== null)
+                                        <a id="file" target="_blank" href="{{ route('return_requests.downloadClientPaymentProof', $return_request->id) }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                            <u>Comprobante de pago</u>
+                                        </a>
+                                    @else
+                                        <label for="client_payment_proof">Adjuntar comprobante de pago</label>
+                                        <form id="return_request_client-form" class="row g-3 needs-validation" novalidate method="POST" action="{{ route('return_requests.addClientPaymentProof', $return_request->id) }}" enctype="multipart/form-data">
+                                            <div class="input-group">
+                                                <input type="file" class="form-control" id="client_payment_proof" name="client_payment_proof" accept=".pdf">
+                                                <button class="btn btn-success" type="button" id="addClientPaymentProofBtn">Subir</button>
+                                            </div>
+                                        </form>
+                                    @endif
                                 </div>
                             </div>
                             <div class="p-3 w-50" style="border: 1px solid #bdbdbd; border-radius: 5px">
@@ -177,6 +189,7 @@
 
     <!--  BEGIN CUSTOM SCRIPTS FILE  -->
     <x-slot:footerFiles>
+        @vite(['resources/js/return_requests/return_request_clients.js'])
         <script>
             $(document).ready(function(){
                 $("#concepts-table").DataTable({

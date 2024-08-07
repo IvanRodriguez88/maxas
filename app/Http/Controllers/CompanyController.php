@@ -127,7 +127,7 @@ class CompanyController extends Controller
     //Obitiene las cuentas que tiene asociadas una empresa
     public function getAccountsByCompanyId(Company $company)
     {
-        return response()->json($company->accounts->load(["bank"]));    
+        return response()->json($company->accounts->where("is_active", 1)->load(["bank"]));    
     }
 
     public function getById(Company $company)

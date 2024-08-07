@@ -18,14 +18,14 @@ class ClientSeeder extends Seeder
     {
        
 
-        Client::create([
-            "name" => "Cliente 1",
-            "user_id" => 2,
-            "client_type_id" => 1,
-            'comission_ban' => 3,
-            'comission_flu' => 3, 
-            'comission_nom' => 3, 
-            'return_base_id' => 1,
-        ]);
+        // Client::create([
+        //     "name" => "Cliente 1",
+        //     "user_id" => 2,
+        //     "client_type_id" => 1,
+        //     'comission_ban' => 3,
+        //     'comission_flu' => 3, 
+        //     'comission_nom' => 3, 
+        //     'return_base_id' => 1,
+        // ]);
     }
 }

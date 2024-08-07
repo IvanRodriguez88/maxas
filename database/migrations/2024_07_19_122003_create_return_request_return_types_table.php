@@ -27,7 +27,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('return_type_id')->nullable();
             $table->foreign('return_type_id')->references('id')->on('return_types');
 
-            $table->string("account_number")->comment("Cuenta bancaria o clabe interbancaria");
+            $table->string("account_number")->comment("Cuenta bancaria o clabe interbancaria o donde recoge");
             $table->float("amount")->comment("Monto");
             $table->string("reference")->nullable()->comment("Referencia");
 

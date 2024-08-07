@@ -65,7 +65,7 @@ class ReturnRequestController extends Controller
         $paymentWays = PaymentWay::where("is_active", 1)->pluck("name", "id");
         $requestTypes = RequestType::where("is_active", 1)->pluck("name", "id");
 
-        $companies = $client->companies->pluck("name", "id");
+        $companies = $client->companies->where("is_active")->pluck("name", "id");
 
         //Verificar si el cliente es persona fisica o moral ------------- 1 = fisica 2 = moral
         if ($client->client_type_id == 1) {
@@ -108,9 +108,9 @@ class ReturnRequestController extends Controller
             'updated_by' => auth()->user()->id,
             'return_base_id' => $client->return_base_id,
             'return_percentage' => $return_percentages["total"],
-            'return_percentage_play' => $return_percentages["play"] - $company->intermediary->comission_percentage ?? 0,
+            'return_percentage_play' => $return_percentages["play"] - ($company->intermediary->comission_percentage ?? 0),
             'return_percentage_promotor' => $return_percentages["promotor"],
-            'intermediary_id' =>  $company->intermediary->id,
+            'intermediary_id' =>  $company->intermediary->id ?? null,
             'return_percentage_intermediary' => $company->intermediary->comission_percentage ?? 0,
             'requires_invoice' => !is_null($request->requires_invoice),
 		]);
@@ -151,7 +151,7 @@ class ReturnRequestController extends Controller
 
 
         //Verificar que exista al menos 1 forma de retorno y 1 concepto y que tenga el comprobante de pago
-        if ($return_request->returnConcepts->count() > 0 && $return_request->returnTypes->count() > 0 && $file) {
+        if ($return_request->returnConcepts->count() > 0 && $return_request->returnTypes->count() > 0) {
             $return_status = 2; //Por operar
         }
 
@@ -224,8 +224,8 @@ class ReturnRequestController extends Controller
                 $returnRequestReturnTypeDataTable = new ReturnRequestReturnTypeDataTable($return_request->id);
                 $params = ['return_request' => $return_request->id];
                 $returnRequestReturnTypeDT = $this->getViewDataTable($returnRequestReturnTypeDataTable, 'return_requests', [], 'return_requests.getReturnRequestReturnTypeDataTable', $params);
-				$companies = Company::where('company_level_id', 3)->get();
-				$accounts = $companies->flatMap(function($company) {
+				$companies = Company::where('company_level_id', 3)->where("is_active", 1)->get();
+				$accounts = $companies->where("is_active", 1)->flatMap(function($company) {
 					return $company->accounts;
 				});
                 return view($view, compact("return_request", "returnRequestReturnTypeDT", "accounts"));
@@ -237,7 +237,7 @@ class ReturnRequestController extends Controller
 
     public function getAddReturnTypeModal()
     {
-        $banks = Bank::where("is_active", 1)->pluck("name", "id");
+        $banks = Bank::where("is_active", 1)->orderBy("name", "asc")->pluck("name", "id");
         $returnTypes = ReturnType::where("is_active", 1)->pluck("name", "id");
         $type = "add";
         return view("return_requests.modal-content", compact("banks", "returnTypes", "type"));
@@ -245,7 +245,7 @@ class ReturnRequestController extends Controller
 
     public function getEditReturnTypeModal(ReturnRequestReturnType $return_request_return_type)
     {
-        $banks = Bank::where("is_active", 1)->pluck("name", "id");
+        $banks = Bank::where("is_active", 1)->orderBy("name", "asc")->pluck("name", "id");
         $returnTypes = ReturnType::where("is_active", 1)->pluck("name", "id");
         $type = "edit";
         return view("return_requests.modal-content", compact("banks", "returnTypes", "type", "return_request_return_type"));
@@ -448,10 +448,33 @@ class ReturnRequestController extends Controller
                 $status = false;
                 $message = $this->getErrorMessage($e, 'return_requests');
             }
-        }else{
-            
         }
+       
+        return $this->getResponse($status, $message, $return_request);
+    }
 
+    public function addClientPaymentProof(Request $request, ReturnRequest $return_request)
+    {
+        $status = false;
+        $file = $request->file("client_payment_proof");
+        $message = "No se cargó el comprobante de pago";
+        if ($file) {
+            $filePath = $file->storeAs(
+                '',
+                'SR'.$return_request->id.'-comprobante_pago_cliente'.".".$file->extension(),
+                'client_payment_proofs'
+            );
+            $params['client_payment_proof'] = $filePath;
+
+            try {
+                $return_request->update($params);
+                $message = "Comprobante de pago cargado correctamente";
+                $status = true;
+            } catch (\Illuminate\Database\QueryException $e) {
+                $status = false;
+                $message = $this->getErrorMessage($e, 'return_requests');
+            }
+        }
        
         return $this->getResponse($status, $message, $return_request);
     }
@@ -661,7 +684,7 @@ class ReturnRequestController extends Controller
         $comission_intermediary = 0;
 
         //Si caballero es intermediario cobrar el .05 sobre total
-        if ($return_request->intermediary_id != null) { //id 2 es caballero
+        if ($return_request->intermediary_id != null) { 
             $comission_intermediary = ($total * $return_request->return_percentage_intermediary) / 100;
         }
 

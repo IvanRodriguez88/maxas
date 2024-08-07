@@ -15,12 +15,12 @@ class CompanySeeder extends Seeder
      */
     public function run()
     {
-        Company::create([
-            "name" => "Sakara",
-            'group_id' => 1, 
-            'intermediary_id' => 1, 
-            'company_level_id' => 1, 
-            'social_object' => "Este es un objeto social de prueba", 
-        ]);
+        // Company::create([
+        //     "name" => "Sakara",
+        //     'group_id' => 1, 
+        //     'intermediary_id' => 1, 
+        //     'company_level_id' => 1, 
+        //     'social_object' => "Este es un objeto social de prueba", 
+        // ]);
     }
 }

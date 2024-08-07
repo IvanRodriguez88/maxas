@@ -67,7 +67,8 @@ Route::middleware("auth")->group(function () {
     Route::get('return_requests/getReturnRequestReturnTypeDataTable/{return_request}',  [ReturnRequestController::class, 'getReturnRequestReturnTypeDataTable'])->name('return_requests.getReturnRequestReturnTypeDataTable');
     Route::get('return_requests/getReturnRequestConceptDataTable/{return_request}',  [ReturnRequestController::class, 'getReturnRequestConceptDataTable'])->name('return_requests.getReturnRequestConceptDataTable');
     // Route::get('return_requests/sendCabMail/{return_request}', [ReturnRequestController::class, 'sendCabMail'])->name("return_requests.sendCabMail");
-
+    Route::post('return_requests/addClientPaymentProof/{return_request}',  [ReturnRequestController::class, 'addClientPaymentProof'])->name('return_requests.addClientPaymentProof');
+    
 
     //Esto va con permisos
     Route::get('return_requests/getAddReturnTypeModal', [ReturnRequestController::class, 'getAddReturnTypeModal'])->name("return_requests.getAddReturnTypeModal");
