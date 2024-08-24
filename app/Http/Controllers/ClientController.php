@@ -55,7 +55,6 @@ class ClientController extends Controller
             'role_id' => 2,
         ]);
 
-
         $params = array_merge($request->all(), [
             "user_id" => $user->id,
             'is_active' => !is_null($request->is_active),
@@ -63,7 +62,7 @@ class ClientController extends Controller
             'updated_by' => auth()->user()->id,
 		]);
 
-        if ($params["promotor_id"] == null) {
+        if (!isset($params["promotor_id"])) {
             $params["comission_ban_promotor"] = null;
             $params["comission_flu_promotor"] = null;
             $params["comission_nom_promotor"] = null;
@@ -100,8 +99,7 @@ class ClientController extends Controller
 		]);
 
         unset($params["password"]);
-
-        if ($params["promotor_id"] == null) {
+        if (!isset($params["promotor_id"])) {
             $params["comission_ban_promotor"] = null;
             $params["comission_flu_promotor"] = null;
             $params["comission_nom_promotor"] = null;
@@ -208,6 +206,7 @@ class ClientController extends Controller
         $params = array_merge($request->all(), [
             'updated_by' => auth()->user()->id,
 		]);
+        $file = $request->file("file");
 
         if ($file) {
             $filePath = $file->storeAs(
@@ -220,7 +219,7 @@ class ClientController extends Controller
 
 		try {
             $client_business->update($params);
-            $message = "Fazón social modificada correctamente";
+            $message = "Razón social modificada correctamente";
 		} catch (\Illuminate\Database\QueryException $e) {
             $status = false;
 			$message = $this->getErrorMessage($e, 'clients');

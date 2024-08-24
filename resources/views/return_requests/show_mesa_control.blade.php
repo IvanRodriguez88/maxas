@@ -84,8 +84,10 @@
                                     <p><b>Ciudad:</b> {{ $return_request->clientBusiness->city }}</p>
                                 </div>
                                 <div>
-                                    <p><b>Calle y número:</b> {{ $return_request->clientBusiness->street_and_number }}</p>
                                     <p><b>Código postal:</b> {{ $return_request->clientBusiness->postal_code }}</p>
+                                    <p><b>Calle:</b> {{ $return_request->clientBusiness->street }}</p>
+                                    <p><b>No. Ext:</b> {{ $return_request->clientBusiness->external_number }}</p>
+                                    <p><b>No. Int:</b> {{ $return_request->clientBusiness->internal_number }}</p>
                                     <p><b>Colonia:</b> {{ $return_request->clientBusiness->cologne }}</p>
                                     @if ($return_request->clientBusiness->file !== null)
                                         <a id="file" target="_blank" href="{{ route('clients.downloadBusinessFile', $return_request->client_business_id) }}">

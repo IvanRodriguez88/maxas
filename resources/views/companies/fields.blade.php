@@ -64,8 +64,6 @@
             "elements" => $intermediaries,
             "value" => isset($company) ? $company->intermediary_id :  old("intermediary_id"),
             "label" => "Intermediario",
-            "required" => true,
-            "invalid_feedback" => "El campo es requerido"
         ])
     </div>
     <div class="col-md-6">

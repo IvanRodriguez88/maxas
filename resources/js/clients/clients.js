@@ -55,11 +55,12 @@ $(document).ready(function(){
 
         if (this.checkValidity()) {
             const formData = new FormData($("#clientBusinessModalForm")[0]);
-
+            
             if (type == "edit") {
                 url = $('meta[name="app-url"]').attr('content')+`/clients/editClientBusiness/${client_business_id}`
-                method = "PUT"
+                method = "POST"
             }
+            
             $.ajax({
                 url: url,
                 type: method,

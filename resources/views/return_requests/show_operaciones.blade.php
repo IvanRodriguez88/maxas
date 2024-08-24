@@ -68,8 +68,10 @@
                                 <p><b>Ciudad:</b> {{ $return_request->clientBusiness->city }}</p>
                             </div>
                             <div>
-                                <p><b>Calle y número:</b> {{ $return_request->clientBusiness->street_and_number }}</p>
                                 <p><b>Código postal:</b> {{ $return_request->clientBusiness->postal_code }}</p>
+                                <p><b>Calle:</b> {{ $return_request->clientBusiness->street }}</p>
+                                <p><b>No. Ext:</b> {{ $return_request->clientBusiness->external_number }}</p>
+                                <p><b>No. Int:</b> {{ $return_request->clientBusiness->internal_number }}</p>
                                 <p><b>Colonia:</b> {{ $return_request->clientBusiness->cologne }}</p>
                                 @if ($return_request->clientBusiness->file !== null)
                                     <a id="file" target="_blank" href="{{ route('clients.downloadBusinessFile', $return_request->client_business_id) }}">
@@ -210,7 +212,7 @@
                                 @foreach ($return_request->returnTypes as $return_type)
                                     <tr>
                                         <td>{{$return_type->beneficiary_name}}</td>
-                                        <td>{{$return_type->bank->name}}</td>
+                                        <td>{{$return_type->bank->name ?? "N/A"}}</td>
                                         <td>{{$return_type->returnType->name}}</td>
                                         <td>{{$return_type->account_number}}</td>
                                         <td>${{number_format($return_type->amount, 2, '.', ',')}}</td>
@@ -220,7 +222,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-
+                        
                     </div>
                     <div class="d-flex justify-content-between gap-2 m-3">
                         @if($return_request->return_request_status_id == 2)

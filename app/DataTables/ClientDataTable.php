@@ -123,8 +123,8 @@ class ClientDataTable extends DataTable
             ->searchable(false)
             ->visible(false),
             Column::make('name')->title("Nombre"),
-            Column::make('email')->title("Correo electrónico"),
-            Column::make('client_type_id')->title("Tipo de cliente"),
+            Column::make('email')->name("users.email")->title("Correo"),
+            Column::make('client_type_id')->name("client_types.name")->title("Tipo de cliente"),
             Column::make('created_at')->searchable(false)->title("Fecha creado"),
             Column::make('updated_at')->searchable(false)->title("Fecha editado"),
             Column::make('is_active')->title("Activo"),

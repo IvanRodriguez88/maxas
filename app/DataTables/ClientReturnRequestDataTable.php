@@ -164,7 +164,7 @@ class ClientReturnRequestDataTable extends DataTable
         ->leftjoin('return_bases', 'return_requests.return_base_id', '=', 'return_bases.id')
         ->leftjoin('return_request_statuses', 'return_requests.return_request_status_id', '=', 'return_request_statuses.id')
 
-        ->where("client_businesses.client_id", $client->id)
+        ->where("return_requests.created_by", auth()->user()->id)
         ->orderBy("return_requests.id", "desc")
 		->newQuery();
     }

@@ -30,7 +30,7 @@
     </div>
 </div>
 <div class="row mb-2">
-    <div class="col-6">
+    <div class="col-3">
         @include("components.custom.forms.input", [
             "id" => "rfc",
             "name" => "rfc",
@@ -42,16 +42,38 @@
             "invalid_feedback" => "El campo es requerido"
         ])
     </div>
-    <div class="col-6">
+    <div class="col-3">
         @include("components.custom.forms.input", [
-            "id" => "street_and_number",
-            "name" => "street_and_number",
+            "id" => "street",
+            "name" => "street",
             "type" => "text",
-            "placeholder" => "Calle y número...",
-            "value" => isset($client_business) ? $client_business->street_and_number :  old("street_and_number"),
-            "label" => "Calle y número",
+            "placeholder" => "Calle...",
+            "value" => isset($client_business) ? $client_business->street :  old("street"),
+            "label" => "Calle",
             "required" => true,
             "invalid_feedback" => "El campo es requerido"
+        ])
+    </div>
+    <div class="col-3">
+        @include("components.custom.forms.input", [
+            "id" => "external_number",
+            "name" => "external_number",
+            "type" => "text",
+            "placeholder" => "No. Exterior...",
+            "value" => isset($client_business) ? $client_business->external_number :  old("external_number"),
+            "label" => "No. Exterior",
+            "required" => true,
+            "invalid_feedback" => "El campo es requerido"
+        ])
+    </div>
+    <div class="col-3">
+        @include("components.custom.forms.input", [
+            "id" => "internal_number",
+            "name" => "internal_number",
+            "type" => "text",
+            "placeholder" => "No. Interior...",
+            "value" => isset($client_business) ? $client_business->internal_number :  old("internal_number"),
+            "label" => "No. Interior",
         ])
     </div>
 </div>

@@ -56,7 +56,7 @@ Route::middleware("auth")->group(function () {
     Route::get('clients/getAddClientBusinessModal', [ClientController::class, "getAddClientBusinessModal"])->name("clients.getAddClientBusinessModal");
     Route::get('clients/getEditClientBusinessModal/{client_business}', [ClientController::class, 'getEditClientBusinessModal'])->name("clients.getEditClientBusinessModal");
     Route::post('clients/addClientBusiness/{client}', [ClientController::class, 'addClientBusiness'])->name("clients.addClientBusiness");
-    Route::put('clients/editClientBusiness/{client_business}', [ClientController::class, 'editClientBusiness'])->name("clients.editClientBusiness");
+    Route::post('clients/editClientBusiness/{client_business}', [ClientController::class, 'editClientBusiness'])->name("clients.editClientBusiness");
     Route::delete('clients/deleteClientBusiness/{client_business}', [ClientController::class, 'deleteClientBusiness'])->name("clients.deleteClientBusiness");
     Route::get('clients/getClientBusinessDataTable/{client}',  [ClientController::class, 'getClientBusinessDataTable'])->name('clients.getClientBusinessDataTable');
     Route::get('clients/downloadBusinessFile/{client_business}', [ClientController::class, 'downloadBusinessFile'])->name("clients.downloadBusinessFile");

@@ -10,11 +10,12 @@ class ReturnRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'client_business_id', 'company_id', 'account_id', 'promotor_id', 'return_base_id', 'request_type_id', 'date', 'requires_invoice',
-        'invoice', 'total_return', 'comission_charged', 'subtotal', 'iva', 'social_cost', 'account_destiny_id', 'intermediary_id', 'bank_payment_proof',
-        'return_percentage_play', 'return_percentage_promotor', 'return_percentage_intermediary', 'comission_promotor', 'comission_intermediary', 'comission_play', 'play_return',
-        'return_percentage', 'return_base_id', 'total_invoice', 'client_payment_proof', 'return_request_status_id',
-        'payment_method_id', 'payment_way_id', 'cfdi_use_id', 'origin_account',
+        'date', 'return_base_id', 'request_type_id', 
+        'total_return', 'comission_charged', 'social_cost',
+        'return_request_status_id', 'total_return',
+        'return_percentage_play', 'return_percentage_promotor', 'return_percentage_intermediary',
+        'comission_promotor', 'comission_intermediary', 'comission_play', 'play_return',
+        'return_percentage', 'return_base_id',
         'is_active', 'created_by', 'updated_by'
     ];
 

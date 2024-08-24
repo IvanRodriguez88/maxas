@@ -91,25 +91,26 @@ class ReturnRequestController extends Controller
     {
         $status = true;
 		$return_request = null;
-
         //Buscar cliente
-        $client = ClientBusiness::find($request->client_business_id)->client;
+        $client = ClientBusiness::find($request->client_business_id)->client ?? null;
         
-        //Buscar porcentaje de retorno en base al tipo de solicitud elegido
-        $request_type_id = $request->request_type_id;
-        $return_percentages = $this->getReturnPercentages($client, $request_type_id);
+        if ($client != null) {
+            //Buscar porcentaje de retorno en base al tipo de solicitud elegido
+            $request_type_id = $request->request_type_id;
+            $return_percentages = $this->getReturnPercentages($client, $request_type_id);
+        }
         
         $company = Company::find($request->company_id);
-
+        
         $params = array_merge($request->all(), [
             'is_active' => 1,
             'date' => now(),
             'created_by' => auth()->user()->id,
             'updated_by' => auth()->user()->id,
-            'return_base_id' => $client->return_base_id,
-            'return_percentage' => $return_percentages["total"],
-            'return_percentage_play' => $return_percentages["play"] - ($company->intermediary->comission_percentage ?? 0),
-            'return_percentage_promotor' => $return_percentages["promotor"],
+            'return_base_id' => $client->return_base_id ?? null,
+            'return_percentage' => $return_percentages["total"] ?? null,
+            'return_percentage_play' => ($return_percentages["play"] ?? 0 - ($company->intermediary->comission_percentage ?? 0)) ,
+            'return_percentage_promotor' => $return_percentages["promotor"] ?? null,
             'intermediary_id' =>  $company->intermediary->id ?? null,
             'return_percentage_intermediary' => $company->intermediary->comission_percentage ?? 0,
             'requires_invoice' => !is_null($request->requires_invoice),
@@ -120,12 +121,12 @@ class ReturnRequestController extends Controller
             $message = "Solicitud de retorno creado correctamente";
 		} catch (\Illuminate\Database\QueryException $e) {
             $status = false;
-			$message = $this->getErrorMessage($e, 'return_requests');
+			$message = $this->getErrorMessage($e, 'return_requests'); 
 		}
         return $this->getResponse($status, $message, $return_request, redirect()->route("return_requests.edit", $return_request->id));
-    }
+    } 
 
-   
+
     
     public function edit(ReturnRequest $return_request)
     {

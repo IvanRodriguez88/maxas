@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('return_request_return_types', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('return_request_id')->nullable();
-            $table->foreign('return_request_id')->references('id')->on('return_requests');
+            $table->unsignedBigInteger('return_request_invoice_id')->nullable();
+            $table->foreign('return_request_invoice_id')->references('id')->on('return_request_invoices');
 
             $table->string("beneficiary_name")->comment("Nombre del beneficiario");
 

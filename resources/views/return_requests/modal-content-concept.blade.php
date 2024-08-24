@@ -42,9 +42,9 @@
             "id" => "concept",
             "name" => "concept",
             "type" => "text",
-            "placeholder" => "Concepto...",
+            "placeholder" => "Clave SAT...",
             "value" => isset($return_request_concept) ? $return_request_concept->concept :  old("concept"),
-            "label" => "Concepto",
+            "label" => "Clave SAT",
             "required" => true,
         ])
     </div>

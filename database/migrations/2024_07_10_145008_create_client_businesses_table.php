@@ -21,13 +21,15 @@ return new class extends Migration
             
             $table->string('business_name')->comment("Razón social");
             $table->string('rfc');
-            $table->string('street_and_number');
-            $table->string('cologne');
-            $table->string('state');
-            $table->string('city');
+            $table->string('street')->nullable();
+            $table->string('external_number')->nullable();
+            $table->string('internal_number')->nullable();
+            $table->string('cologne')->nullable();
+            $table->string('state')->nullable();
+            $table->string('city')->nullable();
             $table->string('postal_code');
 
-            $table->string('file')->comment("Constancia de situación fiscal pdf");
+            $table->string('file')->nullable()->comment("Constancia de situación fiscal pdf");
 
             $table->timestamps();
 

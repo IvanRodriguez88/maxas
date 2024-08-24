@@ -78,7 +78,6 @@
             "elements" => $promotors,
             "value" => isset($client) ? $client->promotor_id :  old("promotor_id"),
             "label" => "Promotor",
-            "disabled" => false,
         ])
     </div>
     <div class="col-8">

@@ -4,7 +4,9 @@ $(document).ready(function(){
 
     $("#client_business_id").on("change", fetchClientBusinessData);
     
-    if ($("#type").val() != "create") {
+    console.log($("#client_business_id").val());
+    
+    if ($("#type").val() != "create" && $("#client_business_id").val() != null) {
         $("#client_business_id").trigger("change");
         
     }
