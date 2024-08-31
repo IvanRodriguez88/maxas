@@ -27,15 +27,15 @@
                     <tbody>
                         <tr>
                             <td>SUBTOTAL</td>
-                            <td id="subtotal">$ {{ number_format($return_request->subtotal, 2, '.', ',') }}</td>
+                            <td id="subtotal">$ {{ number_format($return_request_invoice->subtotal, 2, '.', ',') }}</td>
                             </tr>
                         <tr>
                             <td>IVA 16%</td>
-                            <td id="iva">$ {{ number_format($return_request->iva, 2, '.', ',') }}</td>
+                            <td id="iva">$ {{ number_format($return_request_invoice->iva, 2, '.', ',') }}</td>
                         </tr>
                         <tr>
                             <td><b>TOTAL FACTURA</b></td>
-                            <td><b id="total">$ {{ number_format($return_request->total_invoice, 2, '.', ',') }}</b></td>
+                            <td><b id="total">$ {{ number_format($return_request_invoice->total_invoice, 2, '.', ',') }}</b></td>
                         </tr>
                     </tbody>
                 </table>

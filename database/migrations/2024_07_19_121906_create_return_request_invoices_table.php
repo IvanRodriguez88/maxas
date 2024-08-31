@@ -28,6 +28,10 @@ return new class extends Migration
             $table->unsignedBigInteger('promotor_id')->nullable();
             $table->foreign('promotor_id')->references('id')->on('promotors');
 
+            //Por default se crea con el status 1 --por operar
+            $table->unsignedTinyInteger('return_request_status_id')->default(1); //Default incompelta
+            $table->foreign('return_request_status_id')->references('id')->on('return_request_statuses');
+
             //Cuanto es operada por caballero. Esta es para saber a donde se regresará el dinero por parte de caballero
             $table->unsignedBigInteger('account_destiny_id')->nullable()->comment("Cuenta donde se recibirá el dinero por parte de caballero");
             $table->foreign('account_destiny_id')->references('id')->on('accounts');
@@ -40,7 +44,7 @@ return new class extends Migration
 
             $table->unsignedTinyInteger('cfdi_use_id')->nullable();
             $table->foreign('cfdi_use_id')->references('id')->on('cfdi_uses');
-
+             
             $table->string("origin_account")->nullable()->comment("Cuenta de origin en datos de facturación");
 
             $table->float("subtotal")->nullable()->comment("Subtotal");

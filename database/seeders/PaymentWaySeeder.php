@@ -48,7 +48,8 @@ class PaymentWaySeeder extends Seeder
             "code" => "08",
             "name" => "Vales de despensa",
             "is_active" => 0
-        ]);
+        ]); 
+        
         
         PaymentWay::create([
             "code" => "12",

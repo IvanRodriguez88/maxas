@@ -17,6 +17,8 @@ use App\Http\Controllers\ClientTypeController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ReturnTypeController;
 use App\Http\Controllers\ReturnRequestController;
+use App\Http\Controllers\ReturnRequestInvoiceController;
+
 use App\Http\Controllers\ReturnBaseController;
 use App\Http\Controllers\PromotorController;
 use App\Http\Controllers\DashboardController;
@@ -64,11 +66,23 @@ Route::middleware("auth")->group(function () {
 
     //-----------------------
 
-    Route::get('return_requests/getReturnRequestReturnTypeDataTable/{return_request}',  [ReturnRequestController::class, 'getReturnRequestReturnTypeDataTable'])->name('return_requests.getReturnRequestReturnTypeDataTable');
-    Route::get('return_requests/getReturnRequestConceptDataTable/{return_request}',  [ReturnRequestController::class, 'getReturnRequestConceptDataTable'])->name('return_requests.getReturnRequestConceptDataTable');
+    
+
     // Route::get('return_requests/sendCabMail/{return_request}', [ReturnRequestController::class, 'sendCabMail'])->name("return_requests.sendCabMail");
     Route::post('return_requests/addClientPaymentProof/{return_request}',  [ReturnRequestController::class, 'addClientPaymentProof'])->name('return_requests.addClientPaymentProof');
     
+
+    Route::post('return_requests/addReturnRequest',  [ReturnRequestController::class, 'addReturnRequest'])->name('return_requests.addReturnRequest');
+
+    Route::get('return_request_invoices/{return_request}',  [ReturnRequestInvoiceController::class, 'index'])->name('return_request_invoices.index');
+    Route::get('return_request_invoices/create/{return_request}',  [ReturnRequestInvoiceController::class, 'create'])->name('return_request_invoices.create');
+    Route::post('return_request_invoices/store',  [ReturnRequestInvoiceController::class, 'store'])->name('return_request_invoices.store');
+    Route::get('return_request_invoices/{return_request_invoice}/edit',  [ReturnRequestInvoiceController::class, 'edit'])->name('return_request_invoices.edit');
+    Route::put('return_request_invoices/{return_request_invoice}',  [ReturnRequestInvoiceController::class, 'update'])->name('return_request_invoices.update');
+
+    Route::get('return_request_invoices/getReturnRequestInvoiceDataTable/{return_request}',  [ReturnRequestInvoiceController::class, 'getReturnRequestInvoiceDataTable'])->name('return_request_invoices.getReturnRequestInvoiceDataTable');
+    Route::get('return_request_invoices/getReturnRequestReturnTypeDataTable/{return_request_invoice}',  [ReturnRequestInvoiceController::class, 'getReturnRequestReturnTypeDataTable'])->name('return_request_invoices.getReturnRequestReturnTypeDataTable');
+    Route::get('return_request_invoices/getReturnRequestConceptDataTable/{return_request_invoice}',  [ReturnRequestInvoiceController::class, 'getReturnRequestConceptDataTable'])->name('return_request_invoices.getReturnRequestConceptDataTable');
 
     //Esto va con permisos
     Route::get('return_requests/getAddReturnTypeModal', [ReturnRequestController::class, 'getAddReturnTypeModal'])->name("return_requests.getAddReturnTypeModal");

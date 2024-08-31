@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use App\DataTables\ReturnRequestDataTable;
 use App\DataTables\ReturnRequestReturnTypeDataTable;
 use App\DataTables\ReturnRequestConceptDataTable;
+
 use App\DataTables\ClientReturnRequestDataTable;
 
 use App\Http\Requests\ReturnRequestRequest;
@@ -34,10 +35,28 @@ use App\Models\Account;
 class ReturnRequestController extends Controller
 {
 
-    public function new()
+    public function addReturnRequest()
     {
-        return view('return_requests.create', $this->getCommonModels());
+        $status = true;
+		$return_request = null;
+        
+        $params =[
+            'is_active' => 1,
+            'date' => now(),
+            'created_by' => auth()->user()->id,
+            'updated_by' => auth()->user()->id,
+		]; 
+
+		try {
+            $return_request = ReturnRequest::create($params);
+            $message = "Solicitud de retorno creado correctamente";
+		} catch (\Illuminate\Database\QueryException $e) {
+            $status = false;
+			$message = $this->getErrorMessage($e, 'return_requests'); 
+		}
+        return $this->getResponse($status, $message, $return_request);
     }
+
 
     public function index()
     {
@@ -87,61 +106,10 @@ class ReturnRequestController extends Controller
         return view('return_requests.create', $this->getCommonModels());
     }
 
-    public function store(Request $request)
-    {
-        $status = true;
-		$return_request = null;
-        //Buscar cliente
-        $client = ClientBusiness::find($request->client_business_id)->client ?? null;
-        
-        if ($client != null) {
-            //Buscar porcentaje de retorno en base al tipo de solicitud elegido
-            $request_type_id = $request->request_type_id;
-            $return_percentages = $this->getReturnPercentages($client, $request_type_id);
-        }
-        
-        $company = Company::find($request->company_id);
-        
-        $params = array_merge($request->all(), [
-            'is_active' => 1,
-            'date' => now(),
-            'created_by' => auth()->user()->id,
-            'updated_by' => auth()->user()->id,
-            'return_base_id' => $client->return_base_id ?? null,
-            'return_percentage' => $return_percentages["total"] ?? null,
-            'return_percentage_play' => ($return_percentages["play"] ?? 0 - ($company->intermediary->comission_percentage ?? 0)) ,
-            'return_percentage_promotor' => $return_percentages["promotor"] ?? null,
-            'intermediary_id' =>  $company->intermediary->id ?? null,
-            'return_percentage_intermediary' => $company->intermediary->comission_percentage ?? 0,
-            'requires_invoice' => !is_null($request->requires_invoice),
-		]);
-
-		try {
-            $return_request = ReturnRequest::create($params);
-            $message = "Solicitud de retorno creado correctamente";
-		} catch (\Illuminate\Database\QueryException $e) {
-            $status = false;
-			$message = $this->getErrorMessage($e, 'return_requests'); 
-		}
-        return $this->getResponse($status, $message, $return_request, redirect()->route("return_requests.edit", $return_request->id));
-    } 
-
+  
 
     
-    public function edit(ReturnRequest $return_request)
-    {
-        // return view("return_requests.cab-mail", compact("return_request"));
-
-        $returnRequestReturnTypeDataTable = new ReturnRequestReturnTypeDataTable($return_request->id);
-        $params = ['return_request' => $return_request->id];
-        $returnRequestReturnTypeDT = $this->getViewDataTable($returnRequestReturnTypeDataTable, 'return_requests', [], 'return_requests.getReturnRequestReturnTypeDataTable', $params);
-        
-        $returnRequestConceptDataTable = new ReturnRequestConceptDataTable($return_request->id);
-        $params = ['return_request' => $return_request->id];
-        $returnRequestConceptDT = $this->getViewDataTable($returnRequestConceptDataTable, 'return_requests', [], 'return_requests.getReturnRequestConceptDataTable', $params);
-        
-        return view('return_requests.edit', array_merge(compact("return_request", "returnRequestReturnTypeDT", "returnRequestConceptDT")), $this->getCommonModels());
-    }
+   
 
     
     public function update(Request $request, ReturnRequest $return_request)
@@ -149,7 +117,7 @@ class ReturnRequestController extends Controller
         $status = true;
         $file = $request->file("client_payment_proof");
         $return_status = 1; //Default incompleta
-
+        
 
         //Verificar que exista al menos 1 forma de retorno y 1 concepto y que tenga el comprobante de pago
         if ($return_request->returnConcepts->count() > 0 && $return_request->returnTypes->count() > 0) {
@@ -180,13 +148,12 @@ class ReturnRequestController extends Controller
             $message = $this->getErrorMessage($e, 'return_requests');
         }
         return $this->getResponse($status, $message, $return_request);
+    } 
     
-    }
-
     public function destroy(ReturnRequest $return_request)
     {
         $status = true;
-        try {
+        try { 
             $return_request->update([
                 "is_active" => false,
                 "updated_by" => auth()->user()->id
@@ -481,15 +448,9 @@ class ReturnRequestController extends Controller
     }
 
 
-    public function getReturnRequestReturnTypeDataTable(ReturnRequest $return_request)
-    {
-        return (new ReturnRequestReturnTypeDataTable($return_request->id))->render('components.datatable');
-    }
+ 
 
-    public function getReturnRequestConceptDataTable(ReturnRequest $return_request)
-    {
-        return (new ReturnRequestConceptDataTable($return_request->id))->render('components.datatable');
-    }
+   
 
     public function downloadClientPaymentProof(ReturnRequest $return_request)
     {
@@ -621,49 +582,7 @@ class ReturnRequestController extends Controller
         });    
     }
 
-    function getReturnPercentages(Client $client, $request_type_id){
-       
-
-        switch ($request_type_id) {
-            case '1':
-                $return_percentage_total = $client->comission_ban;
-                break;
-            case '2':
-                $return_percentage_total = $client->comission_flu;
-                break;
-            case '3':
-                $return_percentage_total = $client->comission_nom;
-                break;
-            default:
-                $return_percentage_total = 0;
-                break;
-        }
-
-        $return_percentage_promotor = 0;
-        //Comprobar si el cliente es de un promotor
-        if ($client->promotor != null) {
-            switch ($request_type_id) {
-                case '1':
-                    $return_percentage_promotor = $client->comission_ban_promotor;
-                    break;
-                case '2':
-                    $return_percentage_promotor = $client->comission_flu_promotor;
-                    break;
-                case '3':
-                    $return_percentage_promotor = $client->comission_nom_promotor;
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        return $return_percentages = [
-            "total" => $return_percentage_total,
-            "play" => $return_percentage_total - $return_percentage_promotor,
-            "promotor" => $return_percentage_promotor
-        ];
-        
-    }
+   
 
     //Actualiza comisiones, subtotal, iva y total de una return request
     function updateNumericValues($return_request_id){

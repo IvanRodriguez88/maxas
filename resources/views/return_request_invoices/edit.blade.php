@@ -21,19 +21,19 @@
             <div class="card-body">
                 <h5 class="card-title">Modificar solicitud de retorno</h5>
                 <hr>
-                <form id="return_request_edit-form" class="row g-3 needs-validation" novalidate method="POST" action="{{ route('return_requests.update', $return_request->id) }}" enctype="multipart/form-data">
+                <form id="return_request_edit-form" class="row g-3 needs-validation" novalidate method="POST" action="{{ route('return_request_invoices.update', $return_request_invoice->id) }}" enctype="multipart/form-data">
                     @csrf
                     @method("PUT")
                     <div class="d-flex justify-content-center">
                         <div class="w-100">
-                            @include("return_requests.facturation-fields")
+                            @include("return_request_invoices.facturation-fields")
                             <hr>
                             <div class="mt-2 mb-2">
-                                @include("return_requests.return_concepts")
+                                @include("return_request_invoices.return_concepts")
                             </div>
                             <hr>
                             <div class="mt-2 mb-2">
-                                @include("return_requests.return_types")
+                                @include("return_request_invoices.return_types")
                             </div>
 
                             <div class="d-flex justify-content-end gap-2">
@@ -48,14 +48,14 @@
     </div>
     
     <form id="returnTypeModal" class="row g-3 needs-validation" novalidate method="POST">
-        <input type="hidden" name="return_request_id" id="return_request_id" value="{{$return_request->id}}">
+        <input type="hidden" name="return_request_invoice_id" id="return_request_invoice_id" value="{{$return_request_invoice->id}}">
         <x-modal id="addReturnTypeModal" title="Agregar forma de retorno" size="lg">
             <!-- Este contenido se llenará por AJAX -->
         </x-modal>
     </form>
 
     <form id="returnConceptModal" class="row g-3 needs-validation" novalidate method="POST">
-        <input type="hidden" name="return_request_id" id="return_request_id" value="{{$return_request->id}}">
+        <input type="hidden" name="return_request_invoice_id" id="return_request_invoice_id" value="{{$return_request_invoice->id}}">
         <x-modal id="addReturnConceptModal" title="Agregar concepto" size="lg" btnSubmitId="btnSubmitConcept">
             <!-- Este contenido se llenará por AJAX -->
         </x-modal>

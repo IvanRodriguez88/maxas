@@ -38,9 +38,6 @@ return new class extends Migration
             $table->decimal("return_percentage_promotor", 12, 2)->change();
             $table->decimal("return_percentage_play", 12, 2)->change();
             $table->decimal("return_percentage_intermediary", 12, 2)->change();
-            $table->decimal("subtotal", 12, 2)->change();
-            $table->decimal("iva", 12, 2)->change();
-            $table->decimal("total_invoice", 12, 2)->change();
 
         });
 

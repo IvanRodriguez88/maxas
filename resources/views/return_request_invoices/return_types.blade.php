@@ -30,17 +30,17 @@
                     <tbody>
                         <tr>
                             <td class="text-success"><b>TOTAL A RETORNAR</b></td>
-                            <td class="text-success"><b id="total_return">$ {{ number_format($return_request->total_return, 2, '.', ',') }}</b></td>
+                            <td class="text-success"><b id="total_return">$ {{ number_format($return_request_invoice->total_return, 2, '.', ',') }}</b></td>
                         </tr>
                         <tr>
                             <td><b>TOTAL SUMADO</b></td>
-                            <td><b id="total_return_types">$ {{ number_format($return_request->returnTypes->sum("amount"), 2, '.', ',') }}</b></td>
+                            <td><b id="total_return_types">$ {{ number_format($return_request_invoice->returnTypes->sum("amount"), 2, '.', ',') }}</b></td>
                         </tr>
                         <tr>
                             <td class="text-primary"><b>RESTANTE</b></td>
                             <td class="text-primary">
                                 <b id="rest_types">
-                                    $ {{ number_format($return_request->total_return - $return_request->returnTypes->sum("amount"), 2, '.', ',') }}
+                                    $ {{ number_format($return_request_invoice->total_return - $return_request_invoice->returnTypes->sum("amount"), 2, '.', ',') }}
                                 </b>
                             </td>
                         </tr>

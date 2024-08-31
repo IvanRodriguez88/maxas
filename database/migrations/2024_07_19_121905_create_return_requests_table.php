@@ -18,16 +18,12 @@ return new class extends Migration
             
             $table->datetime("date")->nullable()->comment("Fecha de creación (posible modificación)");
 
-            //Se le pone cual es para que se registre con cual se hizo
             $table->unsignedTinyInteger('return_base_id')->nullable();
             $table->foreign('return_base_id')->references('id')->on('return_bases');
 
+            //Bancarizacion, flujo, nomina
             $table->unsignedTinyInteger('request_type_id')->nullable();
             $table->foreign('request_type_id')->references('id')->on('request_types');
-
-            //Por default se crea con el status 1 --por operar
-            $table->unsignedTinyInteger('return_request_status_id')->default(1); //Default incompelta
-            $table->foreign('return_request_status_id')->references('id')->on('return_request_statuses');
 
             $table->float("total_return")->nullable()->comment("Total a retornar");
             $table->float("comission_charged")->nullable()->comment("Comisión cobrada");

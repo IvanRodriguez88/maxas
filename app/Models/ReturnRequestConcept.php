@@ -9,7 +9,7 @@ class ReturnRequestConcept extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['return_request_id', 'amount', 'unit_type_id', 'concept', 'description', 'unit_price', 'total', 'is_active', 'created_by', 'updated_by'];
+    protected $fillable = ['return_request_invoice_id', 'amount', 'unit_type_id', 'concept', 'description', 'unit_price', 'total', 'is_active', 'created_by', 'updated_by'];
     
     public function unitType()
     {

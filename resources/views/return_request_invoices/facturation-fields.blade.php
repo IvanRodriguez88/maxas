@@ -6,7 +6,7 @@
                 "id" => "company_id",
                 "name" => "company_id",
                 "elements" => $companies,
-                "value" => isset($return_request) ? $return_request->company_id :  old("company_id"),
+                "value" => isset($return_request_invoice) ? $return_request_invoice->company_id :  old("company_id"),
                 "label" => "Empresa",
                 "required" => true,
                 "invalid_feedback" => "El campo es requerido"
@@ -22,8 +22,8 @@
                 <div class="w-100">
                     <select class="form-control" id="account_id" name="account_id" required>
                         <option disabled selected value="">Seleccione una opción...</option>
-                        @if (isset($return_request))
-                            @foreach ($return_request->company->accounts->where("is_active", 1) as $account)
+                        @if (isset($return_request_invoice_invoice))
+                            @foreach ($return_request_invoice_invoice->accounts->where("is_active", 1) as $account)
                                 @php $text = $account->bank->name; @endphp
 
                                 @if ($account->clabe !== null)
@@ -36,7 +36,7 @@
                                         $text .= " - ".$account->account_number;
                                     @endphp
                                 @endif
-                                <option {{$account->id == $return_request->account_id ? "selected" : ""}}  value="{{$account->id}}">{{$text}}</option>
+                                <option {{$account->id == $return_request_invoice->account_id ? "selected" : ""}}  value="{{$account->id}}">{{$text}}</option>
                             @endforeach
                         @endif
                     </select>
@@ -55,7 +55,7 @@
                     "id" => "client_business_id",
                     "name" => "client_business_id",
                     "elements" => $client->clientBusinesses->pluck("business_name", "id"),
-                    "value" => isset($return_request) ? $return_request->client_business_id :  old("client_business_id"),
+                    "value" => isset($return_request_invoice) ? $return_request_invoice->client_business_id :  old("client_business_id"),
                     "label" => "Razón social",
                 ])
                 <hr>
@@ -84,14 +84,14 @@
         <div class="col-md-4">
             <div class="card p-3">
                 <p><b>Nombre:</b> {{$client->name}}</p>
-                <p><b>Promotor:</b> {{isset($return_request) ? $return_request->promotor->name ?? "N/A" : $client->promotor->name ?? "N/A"}}</p>
+                <p><b>Promotor:</b> {{isset($return_request_invoice) ? $return_request_invoice->promotor->name ?? "N/A" : $client->promotor->name ?? "N/A"}}</p>
                 <p><b>Base de retorno:</b> {{$client->returnBase->name}}</p>
             </div>
             <div class="mt-2 ms-1">
                 @include("components.custom.forms.input-check", [
                     "id" => "requires_invoice",
                     "name" => "requires_invoice",
-                    "checked" => isset($return_request) ? $return_request->requires_invoice :  true,
+                    "checked" => isset($return_request_invoice) ? $return_request_invoice->requires_invoice :  true,
                     "label" => "Requiero factura",
                 ])
             </div>
@@ -106,7 +106,7 @@
                 "id" => "payment_method_id",
                 "name" => "payment_method_id",
                 "elements" => $paymentMethods,
-                "value" => isset($return_request) ? $return_request->payment_method_id :  old("payment_method_id"),
+                "value" => isset($return_request_invoice) ? $return_request_invoice->payment_method_id :  old("payment_method_id"),
                 "label" => "Método de pago",
             ])
         </div>
@@ -115,7 +115,7 @@
                 "id" => "payment_way_id",
                 "name" => "payment_way_id",
                 "elements" => $paymentWays,
-                "value" => isset($return_request) ? $return_request->payment_way_id :  old("payment_way_id"),
+                "value" => isset($return_request_invoice) ? $return_request_invoice->payment_way_id :  old("payment_way_id"),
                 "label" => "Forma de pago",
             ])
         </div>
@@ -136,7 +136,7 @@
                 "id" => "cfdi_use_id",
                 "name" => "cfdi_use_id",
                 "elements" => $cfdiUses,
-                "value" => isset($return_request) ? $return_request->cfdi_use_id :  old("cfdi_use_id"),
+                "value" => isset($return_request_invoice) ? $return_request_invoice->cfdi_use_id :  old("cfdi_use_id"),
                 "label" => "Uso CFDI",
             ])
         </div>
@@ -147,7 +147,7 @@
                 "id" => "origin_account",
                 "name" => "origin_account",
                 "type" => "text",
-                "value" => isset($return_request) ? $return_request->origin_account :  old("origin_account"),
+                "value" => isset($return_request_invoice) ? $return_request_invoice->origin_account :  old("origin_account"),
                 "label" => "Cuenta de origen",
             ])
         </div>
@@ -156,7 +156,7 @@
                 "id" => "request_type_id",
                 "name" => "request_type_id",
                 "elements" => $requestTypes,
-                "value" => isset($return_request) ? $return_request->request_type_id :  old("request_type_id"),
+                "value" => isset($return_request_invoice) ? $return_request_invoice->request_type_id :  old("request_type_id"),
                 "label" => "Tipo de solicitud",
             ])
         </div>

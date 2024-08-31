@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\DB;
 
 class ReturnRequestConceptDataTable extends DataTable
 {
-    public function __construct($return_request_id)
+    public function __construct($return_request_invoice_id)
 	{
-		$this->return_request_id = $return_request_id;
+		$this->return_request_invoice_id = $return_request_invoice_id;
 	}
 
     /**
@@ -68,9 +68,9 @@ class ReturnRequestConceptDataTable extends DataTable
 			'return_request_concepts.*',
             DB::raw("CONCAT(unit_types.code, ' - ', unit_types.name) as unit_type_id")
             )
-        ->leftjoin('return_requests', 'return_request_concepts.return_request_id', '=', 'return_requests.id')
+        ->leftjoin('return_request_invoices', 'return_request_concepts.return_request_invoice_id', '=', 'return_request_invoices.id')
         ->leftjoin('unit_types', 'return_request_concepts.unit_type_id', '=', 'unit_types.id')
-        ->where("return_request_concepts.return_request_id", $this->return_request_id)
+        ->where("return_request_concepts.return_request_invoice_id", $this->return_request_invoice_id)
 		->newQuery();
     }
     

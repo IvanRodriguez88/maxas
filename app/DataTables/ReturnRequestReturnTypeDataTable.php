@@ -12,12 +12,13 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 use App\Models\ReturnRequest;
+use App\Models\ReturnRequestInvoice;
 
 class ReturnRequestReturnTypeDataTable extends DataTable
 {
-    public function __construct($return_request_id)
+    public function __construct($return_request_invoice_id)
 	{
-		$this->return_request = ReturnRequest::find($return_request_id);
+		$this->return_request_invoice = ReturnRequestInvoice::find($return_request_invoice_id);
 	}
 
     /**
@@ -43,10 +44,10 @@ class ReturnRequestReturnTypeDataTable extends DataTable
         $datatable->addColumn('action', function($row){
             return $this->getActions($row);
         })->rawColumns(["action"]);
-
+        
         return $datatable;
     }
-
+    
     /**
      * Get query source of dataTable.
      *
@@ -62,7 +63,7 @@ class ReturnRequestReturnTypeDataTable extends DataTable
 		)
         ->leftjoin('banks', 'return_request_return_types.bank_id', '=', 'banks.id')
         ->leftjoin('return_types', 'return_request_return_types.return_type_id', '=', 'return_types.id')
-        ->where("return_request_return_types.return_request_id", $this->return_request->id)
+        ->where("return_request_return_types.return_request_invoice_id", $this->return_request_invoice->id)
 
 		->newQuery();
     }

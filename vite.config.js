@@ -39,6 +39,8 @@ export default defineConfig({
                 'resources/js/return_requests/return_request_mesa_control.js',
                 'resources/js/return_requests/return_request_egresos.js',
                 
+                'resources/js/return_requests/return_request_client_portal.js',
+                
                 'resources/js/promotors/promotors.js',
                 'resources/js/clients/clients.js',
                 'resources/js/companies/companies.js',

@@ -2,9 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\ReturnRequest;
-use App\Models\Client;
-
+use App\Models\ReturnRequestReturnType;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -13,9 +11,16 @@ use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use App\Models\ReturnRequest;
+use App\Models\ReturnRequestInvoice;
 
-class ClientReturnRequestDataTable extends DataTable
+class ReturnRequestInvoiceDataTable extends DataTable
 {
+    public function __construct($return_request_id)
+	{
+		$this->return_request = ReturnRequest::find($return_request_id);
+	}
+
     /**
      * Build DataTable class.
      *
@@ -31,40 +36,11 @@ class ClientReturnRequestDataTable extends DataTable
         })
         ->editColumn('updated_at', function($row) {
             return date("d/m/Y H:i", strtotime($row->updated_at));
-        })
-        ->editColumn('is_active', function($row) {
-            if (!$row->is_active) {
-                return '<span class="badge badge-danger mb-2 me-4">No</span>';
-            }
-            return '<span class="badge badge-success mb-2 me-4">Sí</span>';
-        })
-        ->editColumn('date', function($row) {
-            return date("d/m/Y H:i:s", strtotime($row->date));
-        })
-        ->editColumn('total_return', function($row) {
-            return "$ ".number_format($row->total_return, 2, '.', ',');
         });
-     
 
         $datatable->addColumn('action', function($row){
             return $this->getActions($row);
-        })->rawColumns(["action", "is_active"]);
-
-        $datatable->filter(function($query) {
-            if(request('initial_date') !== null){
-				$query->whereDate('return_requests.date', '>=', request('initial_date'));
-			}
-
-            if(request('final_date') !== null){
-				$query->whereDate('return_requests.date', '<=', request('final_date'));
-			}
-
-            if(request('return_request_status_id') !== null){
-				$query->where('return_requests.return_request_status_id', request('return_request_status_id'));
-			}
-           
-		}, true);
-
+        })->rawColumns(["action"]);
 
         return $datatable;
     }
@@ -72,18 +48,16 @@ class ClientReturnRequestDataTable extends DataTable
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\ReturnRequest $model
+     * @param \App\Models\ReturnRequestInvoice $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(ReturnRequest $model): QueryBuilder
+    public function query(ReturnRequestInvoice $model): QueryBuilder
     {
-        //Obtener clientId
-        $client = Client::where("user_id", auth()->user()->id)->first();
         return $model->select(
-		    'return_requests.*',
+			'return_request_invoices.*',
 		)
-        ->where("return_requests.created_by", auth()->user()->id)
-        ->orderBy("return_requests.id", "desc")
+        ->leftjoin('return_requests', 'return_request_invoices.return_request_id', '=', 'return_requests.id')
+        ->where("return_request_invoices.return_request_id", $this->return_request->id)
 		->newQuery();
     }
     
@@ -103,7 +77,7 @@ class ClientReturnRequestDataTable extends DataTable
                     'responsive' => true,
                     "scrollX"=> true,
                 ])
-                ->setTableId('client_return_requests-table')
+                ->setTableId('return_request_invoices-table')
                 ->columns($this->getColumns())
                 ->minifiedAjax()
                 ->orderBy(0, "asc")
@@ -118,13 +92,7 @@ class ClientReturnRequestDataTable extends DataTable
 
     public function getActions($row){
         $result = null;
-        if (auth()->user()->hasPermissions("return_requests.show")) {
-            $result .= '
-                <a title="Ver" href='.route("return_request_invoices.index", $row->id).' class="btn btn-outline-dark btn-icon ps-2 px-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>                    
-                </a>
-            ';
-        }
+       
         return $result;
 	}
 
@@ -136,12 +104,18 @@ class ClientReturnRequestDataTable extends DataTable
     public function getColumns(): array
     {
         $columns = [
-            Column::make('id')->title('# Sol.'),
+            Column::make('id')
+            ->title('Id')
+            ->searchable(false)
+            ->visible(false),
 
-            Column::make('total_return')->title("Total a retornar"),
-            Column::make('created_at')->title("Fecha creado"),
-            // Column::make('updated_at')->title("Fecha editado"),
-            // Column::make('is_active')->title("Activo"),
+            Column::make('subtotal')->title("subtotal"),
+            // Column::make('bank_id')->title("Banco"),
+            // Column::make('return_type_id')->title("Forma de retorno"),
+            // Column::make('account_number')->title("Cuenta"),
+            // Column::make('amount')->title("Monto"),
+            // Column::make('reference')->title("Referencia"),
+
         ];
 
         if (auth()->user()->hasPermissions("return_requests.edit") ||
@@ -167,6 +141,6 @@ class ClientReturnRequestDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'ClientReturnRequests_' . date('YmdHis');
+        return 'ReturnRequestInvoices_' . date('YmdHis');
     }
 }

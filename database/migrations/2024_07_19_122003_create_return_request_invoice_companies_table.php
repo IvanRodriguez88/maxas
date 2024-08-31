@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
 
             $table->unsignedBigInteger('return_request_invoice_id')->nullable();
-            $table->foreign('return_request_invoice_id')->references('id')->on('return_request_invoices');
+            $table->foreign('return_request_invoice_id')->references('id')->on('return_request_invoices')
+            ->name('rr_invoice_company_foreign_key');
 
             $table->unsignedBigInteger('company_id')->nullable();
             $table->foreign('company_id')->references('id')->on('companies');
